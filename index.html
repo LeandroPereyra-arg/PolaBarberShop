@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pola's Barber Shop · Turnos, tienda y barbería en Adrogué</title>
+  <meta name="description" content="Pola's Barber Shop — nuevo local en Gral. Madariaga 186, Barrio Lindo, Malvinas Argentinas. Reservá tu turno online, comprá ropa y productos de barbería.">
+  <meta name="theme-color" content="#0a0a0a">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BarberShop",
+    "name": "Pola's Barber Shop",
+    "image": "img/logo.png",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "General Madariaga 186",
+      "addressLocality": "Malvinas Argentinas, Almirante Brown",
+      "addressRegion": "Buenos Aires",
+      "postalCode": "B1851",
+      "addressCountry": "AR"
+    },
+    "geo": { "@type": "GeoCoordinates", "latitude": -34.8220717, "longitude": -58.4359975 },
+    "sameAs": ["https://www.instagram.com/polasbarbershop/"]
+  }
+  </script>
+  <link rel="icon" type="image/png" href="img/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700;800&family=Yellowtail&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <script>document.documentElement.classList.add("js")</script>
+</head>
+<body>
+
+  <!-- ============ NAV ============ -->
+  <header class="nav" id="nav">
+    <a class="nav__brand" href="#inicio" aria-label="Pola's Barber Shop — inicio">
+      <img src="img/logo.png" alt="Pola's Barber Shop">
+    </a>
+    <nav class="nav__links" id="navLinks" aria-label="Principal">
+      <a href="#servicios">Servicios</a>
+      <a href="#turnos">Turnos</a>
+      <a href="#tienda">Tienda</a>
+      <a href="#cortes">Cortes</a>
+      <a href="#local">El local</a>
+    </nav>
+    <div class="nav__actions">
+      <button type="button" class="cart-btn" id="cartBtn" aria-label="Abrir carrito">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1.2 12.1a1 1 0 0 1-1 .9H7.2a1 1 0 0 1-1-.9L5 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
+        <span class="cart-btn__count" id="cartCount" data-n="0">0</span>
+      </button>
+      <a href="#turnos" class="btn btn--gold btn--sm nav__cta">Reservar</a>
+      <button type="button" class="nav__toggle" id="navToggle" aria-label="Menú" aria-expanded="false" aria-controls="navLinks"><span></span><span></span></button>
+    </div>
+  </header>
+
+  <main>
+    <!-- ============ HERO ============ -->
+    <section class="hero" id="inicio">
+      <div class="hero__slats" aria-hidden="true"></div>
+      <div class="container hero__inner">
+        <div class="hero__copy">
+          <p class="eyebrow"><span class="dot"></span> Nuevo local abierto · Madariaga 186</p>
+          <h1 class="hero__title">
+            <span class="script">desde el barrio</span>
+            Cortes<br>con <span class="outline">estilo</span>
+          </h1>
+          <p class="hero__lead">Casi 10 años cortando en el barrio y ahora en casa nueva: Gral. Madariaga 186, Malvinas Argentinas. Reservá tu turno online en menos de un minuto y llevate la pilcha de la casa.</p>
+          <div class="hero__cta">
+            <a class="btn btn--gold" href="#turnos">Reservá tu turno</a>
+            <a class="btn btn--ghost" href="#tienda">Ver la tienda</a>
+          </div>
+          <ul class="hero__stats">
+            <li><strong>Casi 10</strong><span>años en el barrio</span></li>
+            <li><strong>4</strong><span>barberos</span></li>
+            <li><strong>+1.000</strong><span>seguidores</span></li>
+          </ul>
+        </div>
+
+        <div class="hero__visual">
+          <div class="sign marble">
+            <img class="sign__logo" src="img/logo.png" alt="Logo de Pola's Barber Shop iluminado">
+          </div>
+          <figure class="hero__photo">
+            <img src="img/equipo.jpg" alt="El equipo de Pola's en el nuevo local">
+            <figcaption class="script">casa nueva</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TICKER ============ -->
+    <div class="ticker-wrap" aria-hidden="true">
+      <div class="ticker">
+        <div class="ticker__track">
+          <span>Nuevo local <i>✂</i> Fade <i>✂</i> Barba <i>✂</i> Diseños <i>✂</i> Color <i>✂</i> Platinado <i>✂</i> Navaja <i>✂</i> Ropa <i>✂</i> Productos <i>✂</i></span>
+          <span>Nuevo local <i>✂</i> Fade <i>✂</i> Barba <i>✂</i> Diseños <i>✂</i> Color <i>✂</i> Platinado <i>✂</i> Navaja <i>✂</i> Ropa <i>✂</i> Productos <i>✂</i></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ SERVICIOS ============ -->
+    <section class="section services" id="servicios">
+      <div class="container">
+        <header class="section-head reveal">
+          <span class="script">lo que hacemos</span>
+          <h2>Servicios</h2>
+          <div class="divider" aria-hidden="true"><i></i><i></i><i></i>
+            <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M9.5 9.5 25 25M9.5 22.5 25 7"/><circle cx="6.8" cy="6.8" r="3.3"/><circle cx="6.8" cy="25.2" r="3.3"/></svg>
+            <i></i><i></i><i></i></div>
+          <p>Precios de referencia. Cualquier duda, escribinos antes de venir.</p>
+        </header>
+        <div class="services__grid" id="servicesGrid"></div>
+      </div>
+    </section>
+
+    <!-- ============ TURNOS ============ -->
+    <section class="section booking marble" id="turnos">
+      <div class="container">
+        <header class="section-head section-head--dark reveal">
+          <span class="script">reservá</span>
+          <h2>Tu turno</h2>
+          <p>Elegí servicio, barbero y horario. Sin llamadas, sin esperar respuesta: el turno queda confirmado al instante.</p>
+        </header>
+
+        <div class="booking__card" id="booking">
+          <div class="booking__main">
+            <ol class="steps">
+              <li class="is-active"><span>Servicio</span></li>
+              <li><span>Barbero</span></li>
+              <li><span>Día y hora</span></li>
+              <li><span>Tus datos</span></li>
+            </ol>
+
+            <div class="step-panel is-active" data-panel="1">
+              <h3 class="step-title">¿Qué te hacés?</h3>
+              <div class="opt-grid" id="bkServices"></div>
+            </div>
+
+            <div class="step-panel" data-panel="2">
+              <h3 class="step-title">¿Con quién?</h3>
+              <div class="opt-grid" id="bkBarbers"></div>
+            </div>
+
+            <div class="step-panel" data-panel="3">
+              <h3 class="step-title">¿Cuándo venís?</h3>
+              <div class="dates" id="bkDates"></div>
+              <div id="bkSlots"></div>
+              <div class="legend">
+                <span><i class="lg lg--free"></i>Libre</span>
+                <span><i class="lg lg--sel"></i>Tu elección</span>
+                <span><i class="lg lg--busy"></i>Ocupado</span>
+              </div>
+            </div>
+
+            <div class="step-panel" data-panel="4">
+              <h3 class="step-title">Último paso</h3>
+              <form id="bkForm" novalidate>
+                <div class="field-row">
+                  <div class="field" data-field="nombre">
+                    <label for="bkNombre">Nombre y apellido</label>
+                    <input id="bkNombre" autocomplete="name" placeholder="Ej: Juan Pérez">
+                    <small class="err">Poné tu nombre</small>
+                  </div>
+                  <div class="field" data-field="tel">
+                    <label for="bkTel">WhatsApp / teléfono</label>
+                    <input id="bkTel" type="tel" inputmode="tel" autocomplete="tel" placeholder="11 2345 6789">
+                    <small class="err">Ingresá un teléfono válido</small>
+                  </div>
+                </div>
+                <div class="field">
+                  <label for="bkNotas">¿Algo que debamos saber? <em>(opcional)</em></label>
+                  <textarea id="bkNotas" rows="3" placeholder="Ej: low fade con una rayita"></textarea>
+                </div>
+                <button type="submit" hidden></button>
+              </form>
+            </div>
+
+            <div class="step-panel" data-panel="5" id="bkDone"></div>
+
+            <div class="booking__nav">
+              <button type="button" class="btn btn--line-dark" id="bkBack" hidden>← Atrás</button>
+              <button type="button" class="btn btn--dark" id="bkNext" disabled>Siguiente</button>
+            </div>
+          </div>
+
+          <aside class="summary" aria-live="polite">
+            <h3>Tu reserva</h3>
+            <dl id="bkSummaryRows"></dl>
+            <div class="summary__total"><span>Total</span><strong id="bkTotal">$0</strong></div>
+            <p class="summary__note">Pagás en el local: efectivo, transferencia o QR.</p>
+          </aside>
+        </div>
+
+        <div class="myturns" id="misTurnos">
+          <form class="myturns__form" id="myForm">
+            <div>
+              <h3>Mis turnos</h3>
+              <p>¿Ya reservaste? Buscá tu turno con tu teléfono para verlo o cancelarlo.</p>
+            </div>
+            <div class="myturns__search">
+              <input id="myTel" type="tel" inputmode="tel" placeholder="Tu teléfono" aria-label="Tu teléfono">
+              <button class="btn btn--dark btn--sm" type="submit">Buscar</button>
+            </div>
+          </form>
+          <ul class="myturns__list" id="myList"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TIENDA ============ -->
+    <section class="section shop" id="tienda">
+      <div class="container">
+        <header class="section-head reveal">
+          <span class="script">la tienda</span>
+          <h2>Ropa &amp; productos</h2>
+          <p>Indumentaria masculina con la marca de la casa y todo lo que usamos en el sillón para que lo tengas en tu casa.</p>
+        </header>
+
+        <div class="tabs" role="tablist" aria-label="Filtrar productos">
+          <button type="button" class="tab" role="tab" data-filter="todo" aria-selected="true">Todo</button>
+          <button type="button" class="tab" role="tab" data-filter="ropa" aria-selected="false">Ropa</button>
+          <button type="button" class="tab" role="tab" data-filter="barberia" aria-selected="false">Barbería</button>
+        </div>
+
+        <div class="shop__grid" id="shopGrid"></div>
+        <p class="shop__note">Pedís desde la web y coordinamos por WhatsApp. Retirás en el local o te lo enviamos.</p>
+      </div>
+    </section>
+
+    <!-- ============ CORTES ============ -->
+    <section class="section cuts" id="cortes">
+      <div class="container">
+        <header class="section-head reveal">
+          <span class="script">cortes de la</span>
+          <h2>Semana</h2>
+          <p>Pasá el mouse (o tocá) para verlos a color.</p>
+        </header>
+        <div class="cuts__grid">
+          <figure class="cut reveal"><img src="img/corte-color.jpg" alt="Corte con color violeta y fade" loading="lazy"><figcaption>Color fantasía</figcaption></figure>
+          <figure class="cut reveal"><img src="img/corte-mullet.jpg" alt="Corte crop texturizado con fade" loading="lazy"><figcaption>Crop + fade</figcaption></figure>
+          <figure class="cut reveal"><img src="img/corte-textura.jpg" alt="Corte con textura en pelo ondulado" loading="lazy"><figcaption>Textura</figcaption></figure>
+          <figure class="cut reveal"><img src="img/clientes.jpg" alt="Clientes de Pola's Barber Shop" loading="lazy"><figcaption>Clientes</figcaption></figure>
+        </div>
+        <a class="ig-banner reveal" data-ig href="#" target="_blank" rel="noopener">
+          <strong>Mirá más en Instagram</strong>
+          <span class="ig-banner__handle">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>
+            @polasbarbershop
+          </span>
+        </a>
+      </div>
+    </section>
+
+    <!-- ============ LOCAL ============ -->
+    <section class="section local" id="local">
+      <div class="container">
+        <header class="section-head reveal">
+          <span class="script">nos mudamos</span>
+          <h2>Nuevo local</h2>
+          <p>Después de casi 10 años en Av. Pedro Suárez, nos fuimos a pocas cuadras: Gral. Madariaga 186. Así fue el cambio.</p>
+        </header>
+
+        <ol class="story">
+          <li class="story__item reveal">
+            <figure><img src="img/local-fachada.jpg" alt="El local anterior de Pola's en Av. Pedro Suárez" loading="lazy"></figure>
+            <span class="story__date">15 / 08</span>
+            <h3>Cerramos una etapa</h3>
+            <p>Después de casi 10 años bajamos la persiana de Av. Pedro Suárez 2887.</p>
+          </li>
+          <li class="story__item reveal">
+            <figure><img src="img/local-obra.jpg" alt="El nuevo local antes de las refacciones" loading="lazy"></figure>
+            <span class="story__date">24 / 08</span>
+            <h3>Manos a la obra</h3>
+            <p>Cuenta regresiva y refacciones día a día en Madariaga 186.</p>
+          </li>
+          <li class="story__item reveal">
+            <figure><img src="img/calle.jpg" alt="El equipo llegando al nuevo local" loading="lazy"></figure>
+            <span class="story__date">28 / 08</span>
+            <h3>Bueno, acá estamos</h3>
+            <p>Marquesina colocada: último tramo antes de abrir.</p>
+          </li>
+          <li class="story__item reveal">
+            <figure><img src="img/equipo.jpg" alt="El equipo de Pola's en la reinauguración" loading="lazy"></figure>
+            <span class="story__date">04 / 09</span>
+            <h3>Llegó el día</h3>
+            <p>Reinauguración y otro sueño cumplido. Primera semana completa con muchos clientes nuevos.</p>
+          </li>
+        </ol>
+
+        <div class="visit reveal">
+          <div class="visit__info">
+            <h3 class="visit__title">Vení a<br><span class="outline">visitarnos</span></h3>
+            <div class="moved" role="note">
+              <strong>¡Nos mudamos!</strong>
+              <span>Ya no atendemos en <s data-addr-old></s>. Desde el 04/09 estamos en <b>Gral. Madariaga 186</b>, a pocas cuadras.</span>
+            </div>
+            <ul class="info-list">
+              <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.5"/></svg>
+                <div><strong>Dirección</strong><span data-addr></span></div>
+              </li>
+              <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+                <div><strong>Horarios</strong><span>Con turno o por orden de llegada</span></div>
+              </li>
+            </ul>
+            <table class="hours"><tbody id="hoursTable"></tbody></table>
+            <div class="visit__actions">
+              <a class="btn btn--gold btn--sm" data-maps href="#" target="_blank" rel="noopener">Cómo llegar</a>
+              <a class="btn btn--ghost btn--sm" data-wa="Hola Pola's! Tengo una consulta" href="#" target="_blank" rel="noopener">WhatsApp</a>
+              <a class="btn btn--ghost btn--sm" data-ig href="#" target="_blank" rel="noopener">Instagram</a>
+            </div>
+          </div>
+          <div class="visit__media">
+            <iframe id="map" title="Mapa de Pola's Barber Shop" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <img class="footer__logo" src="img/logo.png" alt="Pola's Barber Shop">
+      <div class="footer__claim">
+        <span class="script">nos vemos en el sillón</span>
+        <p data-addr></p>
+      </div>
+      <nav class="footer__links" aria-label="Pie de página">
+        <a href="#servicios">Servicios</a>
+        <a href="#turnos">Turnos</a>
+        <a href="#tienda">Tienda</a>
+        <a data-ig href="#" target="_blank" rel="noopener">Instagram</a>
+      </nav>
+    </div>
+    <div class="container footer__bottom">
+      <span>© <span data-year></span> Pola's Barber Shop · Adrogué, Buenos Aires</span>
+      <a href="admin.html">Panel de turnos</a>
+    </div>
+  </footer>
+
+  <!-- WhatsApp flotante -->
+  <a class="wa-float" data-wa="Hola Pola's! Quiero hacer una consulta" href="#" target="_blank" rel="noopener" aria-label="Escribinos por WhatsApp">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 3.5A11.8 11.8 0 0 0 12 0C5.4 0 .1 5.3.1 11.9c0 2.1.6 4.1 1.6 5.9L0 24l6.4-1.7a11.9 11.9 0 0 0 5.6 1.4c6.6 0 11.9-5.3 11.9-11.9 0-3.2-1.2-6.2-3.4-8.3ZM12 21.8c-1.8 0-3.5-.5-5-1.4l-.4-.2-3.8 1 1-3.7-.2-.4a9.9 9.9 0 1 1 8.4 4.7Zm5.4-7.4c-.3-.1-1.8-.9-2-1-.3-.1-.5-.1-.7.1l-.9 1.2c-.2.2-.3.2-.6.1a8.1 8.1 0 0 1-4-3.5c-.3-.5.3-.5.9-1.6.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6a1.1 1.1 0 0 0-.8.4 3.4 3.4 0 0 0-1 2.5c0 1.5 1.1 2.9 1.2 3.1.1.2 2.1 3.2 5.1 4.5 1.9.8 2.6.9 3.6.7.6-.1 1.8-.7 2-1.5.3-.7.3-1.3.2-1.5-.1-.1-.3-.2-.6-.3Z"/></svg>
+  </a>
+
+  <!-- Carrito -->
+  <div class="overlay" id="overlay"></div>
+  <aside class="drawer" id="cart" aria-hidden="true" aria-label="Carrito">
+    <div class="drawer__head">
+      <h3>Tu carrito</h3>
+      <button type="button" class="icon-btn" id="cartClose" aria-label="Cerrar carrito">✕</button>
+    </div>
+    <ul class="drawer__items" id="cartItems"></ul>
+    <div class="drawer__foot">
+      <div class="drawer__total"><span>Total</span><strong id="cartTotal">$0</strong></div>
+      <button type="button" class="btn btn--gold" id="cartCheckout" disabled>Pedir por WhatsApp</button>
+      <small>Coordinamos pago y retiro/envío por chat.</small>
+    </div>
+  </aside>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="js/data.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/art.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/booking.js"></script>
+  <script src="js/shop.js"></script>
+</body>
+</html>

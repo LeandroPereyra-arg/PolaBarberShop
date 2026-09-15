@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Panel de turnos · Pola's Barber Shop</title>
+  <link rel="icon" type="image/png" href="img/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700;800&family=Yellowtail&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="admin">
+
+  <div class="admin-gate" id="gate">
+    <img src="img/logo.png" alt="Pola's Barber Shop">
+    <h1>Panel de turnos</h1>
+    <form id="pinForm">
+      <input class="input" id="pin" type="password" inputmode="numeric" placeholder="PIN" aria-label="PIN" autocomplete="current-password">
+      <button class="btn btn--gold btn--sm" type="submit">Entrar</button>
+    </form>
+    <p>PIN de demo: 1234 — cambialo en <code>js/data.js</code></p>
+  </div>
+
+  <div id="app" hidden>
+    <header class="admin-top">
+      <div class="admin-top__brand">
+        <img src="img/logo.png" alt="">
+        <h1>Turnos</h1>
+      </div>
+      <div class="admin-top__actions">
+        <a class="btn btn--ghost btn--sm" href="index.html">Ver sitio</a>
+        <button class="btn btn--ghost btn--sm" type="button" id="logout">Salir</button>
+      </div>
+    </header>
+
+    <main class="admin-wrap">
+      <section class="stats">
+        <div class="stat"><span>Turnos hoy</span><strong id="stHoy">0</strong></div>
+        <div class="stat"><span>Próximos 7 días</span><strong id="stSemana">0</strong></div>
+        <div class="stat stat--gold"><span>Estimado hoy</span><strong id="stPlata">$0</strong></div>
+        <div class="stat"><span>Cancelados (total)</span><strong id="stCancel">0</strong></div>
+      </section>
+
+      <div class="toolbar">
+        <input class="input" type="date" id="fDate" aria-label="Fecha">
+        <button class="mini" type="button" id="fToday">Hoy</button>
+        <button class="mini" type="button" id="fAll">Todas las fechas</button>
+        <select id="fBarber" aria-label="Barbero"></select>
+        <select id="fEstado" aria-label="Estado">
+          <option value="todos">Todos los estados</option>
+          <option value="confirmado">Confirmados</option>
+          <option value="atendido">Atendidos</option>
+          <option value="cancelado">Cancelados</option>
+        </select>
+        <span class="spacer"></span>
+        <button class="mini" type="button" id="seed">Cargar turnos de ejemplo</button>
+        <button class="mini" type="button" id="export">Exportar CSV</button>
+      </div>
+
+      <div class="table-wrap">
+        <table class="turnos">
+          <thead>
+            <tr><th>Fecha y hora</th><th>Cliente</th><th>Teléfono</th><th>Servicio</th><th>Barbero</th><th>Estado</th><th>Acciones</th></tr>
+          </thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="js/data.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>
