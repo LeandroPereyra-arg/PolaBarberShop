@@ -4,6 +4,8 @@ Sitio web para la barbería **Pola's Barber Shop**, ubicada en Gral. Madariaga 1
 
 Proyecto individual de **Leandro Pereyra**.
 
+La documentación del proyecto (asignación de tareas, identidad de la empresa, problemática y posible resolución) está en [docs/PROYECTO.md](docs/PROYECTO.md).
+
 ## Funcionalidades
 
 - **Turnos online.** El cliente elige servicio, barbero, día y horario, y carga sus datos. Los horarios ocupados se muestran bloqueados y se calcula la disponibilidad según la duración de cada servicio.
