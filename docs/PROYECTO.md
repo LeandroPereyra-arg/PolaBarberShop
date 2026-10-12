@@ -9,23 +9,14 @@ Proyecto individual de **Leandro Pereyra** (GitHub: [@LeandroPereyra-arg](https:
 
 ## 1. Asignación de tareas
 
-Al ser un proyecto individual, todas las tareas están a mi cargo. La división sirve para ordenar el trabajo por etapas y poder mostrar el avance.
+Las tareas se gestionan como **issues del repositorio**, asignadas y etiquetadas:
 
-| # | Tarea | Responsable | Estado |
-|---|-------|-------------|--------|
-| 1 | Relevamiento de la barbería: identidad visual, servicios y datos de contacto a partir de su Instagram | Leandro Pereyra | Terminada |
-| 2 | Definición de la paleta, tipografías y recursos gráficos (logo vectorizado del flyer, texturas) | Leandro Pereyra | Terminada |
-| 3 | Maquetado del sitio: portada, servicios, galería e información del local | Leandro Pereyra | Terminada |
-| 4 | Sistema de turnos: selección de servicio, barbero, día y horario, con control de disponibilidad | Leandro Pereyra | Terminada |
-| 5 | Confirmación del turno: código de reserva, aviso por WhatsApp y alta en el calendario | Leandro Pereyra | Terminada |
-| 6 | Consulta y cancelación de turnos por parte del cliente | Leandro Pereyra | Terminada |
-| 7 | Tienda: catálogo, talles, carrito y pedido por WhatsApp | Leandro Pereyra | Terminada |
-| 8 | Panel de administración: listado, filtros, cambios de estado y exportación a CSV | Leandro Pereyra | Terminada |
-| 9 | Adaptación a celulares y pruebas de funcionamiento | Leandro Pereyra | Terminada |
-| 10 | Publicación del repositorio y documentación | Leandro Pereyra | Terminada |
-| 11 | Validación de precios, horarios, barberos y productos con la barbería | Leandro Pereyra | Pendiente |
-| 12 | Reemplazo del guardado local por una base de datos real | Leandro Pereyra | Pendiente |
-| 13 | Publicación del sitio online y carga de fotos reales de productos | Leandro Pereyra | Pendiente |
+**→ [Ver todas las tareas](https://github.com/LeandroPereyra-arg/PolaBarberShop/issues?q=is%3Aissue)**
+
+- [Tareas terminadas](https://github.com/LeandroPereyra-arg/PolaBarberShop/issues?q=is%3Aissue+is%3Aclosed) (cerradas)
+- [Tareas pendientes](https://github.com/LeandroPereyra-arg/PolaBarberShop/issues?q=is%3Aissue+is%3Aopen) (abiertas)
+
+Al ser un proyecto individual, todas están asignadas a [@LeandroPereyra-arg](https://github.com/LeandroPereyra-arg). Las etiquetas distinguen el tipo de trabajo (`frontend`, `funcionalidad`, `documentacion`) y el estado (`hecho`, `pendiente`).
 
 ---
 
