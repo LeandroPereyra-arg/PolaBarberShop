@@ -28,6 +28,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700;800&family=Yellowtail&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="vendor/crd-ui/crd-ui.css">
   <link rel="stylesheet" href="css/styles.css">
   <script>document.documentElement.classList.add("js")</script>
 </head>
@@ -357,10 +358,150 @@
     <ul class="drawer__items" id="cartItems"></ul>
     <div class="drawer__foot">
       <div class="drawer__total"><span>Total</span><strong id="cartTotal">$0</strong></div>
-      <button type="button" class="btn btn--gold" id="cartCheckout" disabled>Pedir por WhatsApp</button>
-      <small>Coordinamos pago y retiro/envío por chat.</small>
+      <button type="button" class="btn btn--gold" id="cartCheckout" disabled>Finalizar compra</button>
+      <button type="button" class="link-btn link-btn--light" id="cartWhatsapp" disabled>o pedir por WhatsApp</button>
+      <small>Pagá con tarjeta, o con efectivo o transferencia.</small>
     </div>
   </aside>
+
+  <!-- Módulo de pago -->
+  <div class="checkout" id="checkout" hidden>
+    <div class="checkout__backdrop" data-co-close></div>
+    <section class="checkout__panel" role="dialog" aria-modal="true" aria-labelledby="coTitle" tabindex="-1">
+      <header class="checkout__head">
+        <img class="checkout__logo" src="img/logo.png" alt="">
+        <h2 id="coTitle">Finalizar compra</h2>
+        <button type="button" class="icon-btn" data-co-close aria-label="Cerrar">✕</button>
+      </header>
+
+      <div class="checkout__body">
+        <div class="checkout__main">
+          <ol class="steps" id="coSteps">
+            <li class="is-active"><span>Entrega</span></li>
+            <li><span>Tus datos</span></li>
+            <li><span>Pago</span></li>
+          </ol>
+
+          <div class="step-panel is-active" data-co-panel="1">
+            <h3 class="step-title">¿Cómo lo recibís?</h3>
+            <div class="opt-grid" id="coEntrega"></div>
+            <div class="co-sub">
+              <h4>Tu pedido</h4>
+              <button type="button" class="link-btn" data-co-accion="editarCarrito">Editar carrito</button>
+            </div>
+            <ul class="co-items" id="coItems"></ul>
+          </div>
+
+          <div class="step-panel" data-co-panel="2">
+            <h3 class="step-title">Tus datos</h3>
+            <form id="coDatos" novalidate>
+              <div class="field-row">
+                <div class="field" data-cofield="nombre">
+                  <label for="coNombre">Nombre y apellido</label>
+                  <input id="coNombre" autocomplete="name" placeholder="Ej: Juan Pérez">
+                  <small class="err"></small>
+                </div>
+                <div class="field" data-cofield="telefono">
+                  <label for="coTelefono">WhatsApp / teléfono</label>
+                  <input id="coTelefono" type="tel" inputmode="tel" autocomplete="tel" placeholder="11 2345 6789">
+                  <small class="err"></small>
+                </div>
+              </div>
+              <div class="field" data-cofield="email">
+                <label for="coEmail">Email <em>(para el comprobante)</em></label>
+                <input id="coEmail" type="email" autocomplete="email" placeholder="nombre@mail.com">
+                <small class="err"></small>
+              </div>
+              <fieldset class="co-envio" id="coEnvioCampos" hidden>
+                <legend>Dirección de envío</legend>
+                <div class="field" data-cofield="direccion">
+                  <label for="coDireccion">Calle y número</label>
+                  <input id="coDireccion" autocomplete="street-address" placeholder="Ej: Av. Espora 1234">
+                  <small class="err"></small>
+                </div>
+                <div class="field-row">
+                  <div class="field" data-cofield="localidad">
+                    <label for="coLocalidad">Localidad</label>
+                    <input id="coLocalidad" autocomplete="address-level2" placeholder="Ej: Adrogué">
+                    <small class="err"></small>
+                  </div>
+                  <div class="field" data-cofield="cp">
+                    <label for="coCp">Código postal</label>
+                    <input id="coCp" autocomplete="postal-code" placeholder="1846">
+                    <small class="err"></small>
+                  </div>
+                </div>
+              </fieldset>
+              <button type="submit" hidden></button>
+            </form>
+          </div>
+
+          <div class="step-panel" data-co-panel="3">
+            <h3 class="step-title">¿Cómo pagás?</h3>
+            <div class="opt-grid opt-grid--3" id="coMetodos"></div>
+
+            <div id="coTarjeta" hidden>
+              <div class="sim-note" role="note">
+                <p><strong>Pago simulado.</strong> Es una demostración: no se cobra nada y los datos de la tarjeta no se guardan ni se envían. <b>No ingreses los datos de una tarjeta real.</b></p>
+                <details>
+                  <summary>Usar una tarjeta de prueba</summary>
+                  <ul class="test-cards" id="coPrueba"></ul>
+                </details>
+              </div>
+              <div class="card-pay">
+                <div class="card-pay__preview" id="coCard"></div>
+                <form class="card-pay__form" id="coCardForm" novalidate autocomplete="off">
+                  <div class="field" data-cofield="numero">
+                    <label for="coNumero">Número de tarjeta <span class="co-marca" id="coMarca"></span></label>
+                    <input id="coNumero" inputmode="numeric" autocomplete="off" placeholder="0000 0000 0000 0000">
+                    <small class="err"></small>
+                  </div>
+                  <div class="field" data-cofield="titular">
+                    <label for="coTitular">Nombre como figura en la tarjeta</label>
+                    <input id="coTitular" autocomplete="off" placeholder="JUAN PEREZ">
+                    <small class="err"></small>
+                  </div>
+                  <div class="field-row field-row--keep">
+                    <div class="field" data-cofield="vencimiento">
+                      <label for="coVencimiento">Vencimiento</label>
+                      <input id="coVencimiento" inputmode="numeric" autocomplete="off" placeholder="MM/AA" maxlength="5">
+                      <small class="err"></small>
+                    </div>
+                    <div class="field" data-cofield="cvc">
+                      <label for="coCvc">Código de seguridad</label>
+                      <input id="coCvc" inputmode="numeric" autocomplete="off" placeholder="123" maxlength="3">
+                      <small class="err"></small>
+                    </div>
+                  </div>
+                  <div class="field" id="coCuotasField">
+                    <label for="coCuotas">Cuotas</label>
+                    <select id="coCuotas"></select>
+                  </div>
+                  <button type="submit" hidden></button>
+                </form>
+              </div>
+            </div>
+
+            <div class="co-local" id="coLocal" hidden></div>
+          </div>
+
+          <div class="step-panel" data-co-panel="4" id="coResultado" aria-live="polite"></div>
+
+          <div class="booking__nav" id="coNav">
+            <button type="button" class="btn btn--line-dark" id="coBack" hidden>← Atrás</button>
+            <button type="button" class="btn btn--dark" id="coNext">Siguiente</button>
+          </div>
+        </div>
+
+        <aside class="summary checkout__summary" aria-live="polite">
+          <h3>Tu compra</h3>
+          <dl id="coResumen"></dl>
+          <div class="summary__total"><span>Total</span><strong id="coTotal">$0</strong></div>
+          <p class="summary__note" id="coCuotaNote"></p>
+        </aside>
+      </div>
+    </section>
+  </div>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
@@ -371,5 +512,6 @@
   <script src="js/main.js"></script>
   <script src="js/booking.js"></script>
   <script src="js/shop.js"></script>
+  <script type="module" src="js/checkout.js"></script>
 </body>
 </html>

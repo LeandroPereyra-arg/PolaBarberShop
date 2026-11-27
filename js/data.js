@@ -34,6 +34,16 @@ const CONFIG = {
   // Simula horarios ya ocupados para que la demo se vea real.
   // Poné false cuando conectes una base de datos real.
   demoOcupados: true,
+
+  // ---------- Tienda ----------
+  envio: { costo: 3500, gratisDesde: 60000 },
+  // Planes de cuotas con tarjeta de crédito. recargo = porcentaje sobre el total.
+  cuotas: [
+    { n: 1,  recargo: 0 },
+    { n: 3,  recargo: 0 },
+    { n: 6,  recargo: 0.10 },
+    { n: 12, recargo: 0.20 },
+  ],
 };
 
 const SERVICIOS = [
@@ -73,4 +83,16 @@ const PRODUCTOS = [
   { id: "aceite-barba",  tipo: "barberia", cat: "Barba",    nombre: "Aceite para Barba",     desc: "Argán y jojoba. Suaviza y perfuma. 30ml.",        precio: 8000,  ilustracion: "aceite",  color: "#8a5a1b" },
   { id: "shampoo-barba", tipo: "barberia", cat: "Barba",    nombre: "Shampoo Barba & Pelo",  desc: "Limpieza profunda, uso diario. 250ml.",           precio: 9000,  ilustracion: "shampoo", color: "#111111" },
   { id: "navaja",        tipo: "barberia", cat: "Herramientas", nombre: "Navaja Clásica",    desc: "Acero inoxidable, hoja intercambiable.",          precio: 14000, ilustracion: "navaja",  color: "#1a1a1a" },
+];
+
+/* Tarjetas de prueba del pago SIMULADO.
+   El resultado depende del número, para poder mostrar todos los casos.
+   Cualquier otro número válido se aprueba. */
+const TARJETAS_PRUEBA = [
+  { numero: "4242 4242 4242 4242", marca: "Visa",       resultado: "aprobada",       etiqueta: "aprobada" },
+  { numero: "5555 5555 5555 4444", marca: "Mastercard", resultado: "aprobada",       etiqueta: "aprobada" },
+  { numero: "3782 822463 10005",   marca: "Amex",       resultado: "aprobada",       etiqueta: "aprobada" },
+  { numero: "4000 0000 0000 0002", marca: "Visa",       resultado: "rechazada",      etiqueta: "rechazada" },
+  { numero: "4000 0000 0000 9995", marca: "Visa",       resultado: "sin_fondos",     etiqueta: "sin fondos" },
+  { numero: "4000 0000 0000 0119", marca: "Visa",       resultado: "error_conexion", etiqueta: "error de conexión" },
 ];

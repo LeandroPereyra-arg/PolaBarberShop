@@ -44,6 +44,13 @@
     $("#export").addEventListener("click", exportCsv);
     $("#seed").addEventListener("click", seed);
 
+    $("#ventas").addEventListener("click", e => {
+      const b = e.target.closest("[data-venta]");
+      if (!b) return;
+      Pedidos.update(b.dataset.id, { estado: b.dataset.venta });
+      renderVentas();
+    });
+
     $("#rows").addEventListener("click", e => {
       const b = e.target.closest("[data-act]");
       if (!b) return;
@@ -94,6 +101,35 @@
     $("#stSemana").textContent = activos.filter(t => t.fecha >= hoy && t.fecha <= en7).length;
     $("#stPlata").textContent = fmtPrice(deHoy.reduce((n, t) => n + (t.precio || 0), 0));
     $("#stCancel").textContent = all.filter(t => t.estado === "cancelado").length;
+    renderVentas();
+  }
+
+  const pagoTxt = pg => pg.metodo === "local"
+    ? "Efectivo / transferencia"
+    : `${pg.metodo === "credito" ? "Crédito" : "Débito"} ${escapeHtml(pg.marcaNombre)} •••• ${pg.last4}${pg.cuotas > 1 ? `<span class="notes">${pg.cuotas} cuotas · aut. ${pg.autorizacion}</span>` : `<span class="notes">aut. ${pg.autorizacion}</span>`}`;
+
+  function renderVentas() {
+    const list = Pedidos.read().sort((a, b) => b.creado.localeCompare(a.creado));
+    $("#ventas").innerHTML = list.length ? list.map(p => `
+      <tr>
+        <td><span class="when">${p.numero}</span></td>
+        <td>${new Date(p.creado).toLocaleString("es-AR", { dateStyle: "short", timeStyle: "short" })}</td>
+        <td><strong>${escapeHtml(p.cliente.nombre)}</strong><span class="notes">${escapeHtml(p.cliente.telefono)} · ${escapeHtml(p.cliente.email)}</span></td>
+        <td>${p.items.map(i => `${i.qty}× ${escapeHtml(i.nombre)}${i.talle && i.talle !== "Único" ? ` (${i.talle})` : ""}`).join("<br>")}</td>
+        <td>${p.entrega === "envio" ? `Envío<span class="notes">${escapeHtml(p.cliente.direccion)}, ${escapeHtml(p.cliente.localidad)} (${escapeHtml(p.cliente.cp)})</span>` : "Retiro en el local"}</td>
+        <td>${pagoTxt(p.pago)}</td>
+        <td><strong>${fmtPrice(p.total)}</strong></td>
+        <td><span class="pill pill--${p.estado.replace(/ /g, "-")}">${p.estado}</span></td>
+        <td><div class="row-actions">
+          ${p.estado === "pendiente de pago" ? `<button class="mini" data-venta="pagado" data-id="${p.id}">Marcar pagado</button>` : ""}
+          ${p.estado === "pagado" ? `<button class="mini" data-venta="entregado" data-id="${p.id}">Entregado</button>` : ""}
+        </div></td>
+      </tr>`).join("")
+      : `<tr class="empty-row"><td colspan="9">Todavía no hay ventas.</td></tr>`;
+
+    const hoy = Turnos.ymd(new Date());
+    const deHoy = list.filter(p => Turnos.ymd(new Date(p.creado)) === hoy && p.estado !== "pendiente de pago");
+    $("#stVentas").textContent = fmtPrice(deHoy.reduce((n, p) => n + p.total, 0));
   }
 
   function exportCsv() {

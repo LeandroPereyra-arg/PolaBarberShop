@@ -126,6 +126,7 @@
 
     $("#cartTotal").textContent = fmtPrice(total);
     $("#cartCheckout").disabled = !cart.length;
+    $("#cartWhatsapp").disabled = !cart.length;
   }
 
   $("#cartItems").addEventListener("click", e => {
@@ -142,7 +143,15 @@
     }
   });
 
+  // Finalizar compra: abre el módulo de pago (js/checkout.js)
   $("#cartCheckout").addEventListener("click", () => {
+    if (!cart.length) return;
+    closeCart();
+    document.dispatchEvent(new CustomEvent("polas:checkout"));
+  });
+
+  // Alternativa: mandar el pedido armado por WhatsApp
+  $("#cartWhatsapp").addEventListener("click", () => {
     if (!cart.length) return;
     const lineas = cart.map(i => {
       const p = producto(i.id);
@@ -153,6 +162,18 @@
     const msg = `Hola Pola's! Quiero hacer este pedido de la tienda web 🛍️\n\n${lineas.join("\n")}\n\nTotal: ${fmtPrice(total)}\n\n¿Cómo coordinamos el pago y el retiro?`;
     window.open(waLink(msg), "_blank", "noopener");
   });
+
+  // API del carrito para el módulo de pago
+  window.Carrito = {
+    detalle: () => cart.map(i => {
+      const p = producto(i.id);
+      return { id: p.id, nombre: p.nombre, cat: p.cat, talle: i.talle, qty: i.qty, precio: p.precio, subtotal: p.precio * i.qty, producto: p };
+    }),
+    subtotal: () => cart.reduce((n, i) => n + i.qty * producto(i.id).precio, 0),
+    cantidad: () => cart.reduce((n, i) => n + i.qty, 0),
+    vaciar: () => { cart = []; save(); },
+    abrir: openCart,
+  };
 
   render();
   renderCart();

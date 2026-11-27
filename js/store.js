@@ -99,3 +99,43 @@ const Turnos = (() => {
 
   return { read, add, update, remove, slots, byPhone, barberFree, ymd, toMin, toHora };
 })();
+
+/* ============================================================
+   Pedidos de la tienda. Igual que los turnos, hoy se guardan en
+   el navegador. NUNCA se guardan los datos de la tarjeta: solo la
+   marca y los últimos 4 dígitos, como en un comprobante real.
+   ============================================================ */
+const Pedidos = (() => {
+  const KEY = "polas_pedidos_v1";
+
+  const read = () => {
+    try { return JSON.parse(localStorage.getItem(KEY)) || []; } catch { return []; }
+  };
+  const write = list => {
+    try { localStorage.setItem(KEY, JSON.stringify(list)); } catch { /* sin storage */ }
+  };
+
+  function add(data) {
+    const list = read();
+    const p = {
+      id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+      numero: "PB-" + Date.now().toString().slice(-6),
+      creado: new Date().toISOString(),
+      ...data,
+    };
+    list.push(p);
+    write(list);
+    return p;
+  }
+
+  function update(id, patch) {
+    const list = read();
+    const i = list.findIndex(p => p.id === id);
+    if (i < 0) return null;
+    list[i] = { ...list[i], ...patch };
+    write(list);
+    return list[i];
+  }
+
+  return { read, add, update };
+})();

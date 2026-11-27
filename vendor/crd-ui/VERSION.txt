@@ -1,0 +1,2 @@
+crd-ui 0.13.2 (MIT) — https://github.com/JuandaGarcia/crd-ui
+Copiado sin cambios desde el paquete oficial de npm (núcleo vanilla + estilos).
