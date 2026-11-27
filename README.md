@@ -4,7 +4,10 @@ Sitio web para la barbería **Pola's Barber Shop**, ubicada en Gral. Madariaga 1
 
 Proyecto individual de **Leandro Pereyra**.
 
-La documentación del proyecto (asignación de tareas, identidad de la empresa, problemática y posible resolución) está en [docs/PROYECTO.md](docs/PROYECTO.md).
+Documentación:
+
+- [docs/PROYECTO.md](docs/PROYECTO.md): asignación de tareas, identidad de la empresa, problemática y posible resolución.
+- [docs/DOCUMENTACION_TECNICA.md](docs/DOCUMENTACION_TECNICA.md): arquitectura, diseño de datos, comportamiento, restricciones, pruebas y despliegue (secciones 3 a 8).
 
 ## Funcionalidades
 
@@ -24,7 +27,15 @@ No necesita compilación ni dependencias. Desde la carpeta del proyecto:
 python -m http.server 5510
 ```
 
-Después abrir `http://localhost:5510` en el navegador.
+Después abrir `http://localhost:5510` en el navegador. No se puede abrir con doble clic sobre `index.html`: el módulo de pago usa módulos de JavaScript, que el navegador solo carga desde un servidor.
+
+## Pruebas
+
+Pruebas unitarias y de integración con el corredor que trae Node.js (versión 22 o superior), sin dependencias:
+
+```bash
+npm test
+```
 
 ## Estructura
 
@@ -38,11 +49,14 @@ js/store.js       Guardado y disponibilidad de turnos
 js/booking.js     Sistema de turnos
 js/shop.js        Tienda y carrito
 js/checkout.js    Módulo de pago (entrega, datos, tarjeta, comprobante)
+js/pago.js        Lógica del pago sin pantalla: validaciones, totales y cuotas
 js/art.js         Ilustraciones de los productos
 js/main.js        Navegación, servicios y horarios
 js/admin.js       Panel de administración
 img/              Logo y fotos
 vendor/crd-ui/    Componente de tarjeta crd-ui 0.13.2 (licencia MIT)
+tests/            Pruebas unitarias e integración (node:test)
+docs/             Documentación del proyecto
 ```
 
 ## Tarjetas de prueba
