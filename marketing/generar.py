@@ -11,7 +11,10 @@ ninguno, saltea ese paso y avisa.
 from __future__ import annotations
 
 import colorsys
+import io
 import math
+import os
+import re
 import shutil
 import subprocess
 import tempfile
@@ -453,27 +456,44 @@ AMBIENTES = [
     ("Depósito", [(0, 760), (150, 760), (150, FONDO), (0, FONDO)], "FFCFCAC0"),
 ]
 MUEBLES = [
-    # nombre, x centro, y centro, ancho (x), profundidad (y), alto, elevación, color ARGB
-    ("Banco de espera", 35, 225, 50, 170, 45, 0, "FF111111"),
-    ("Mesa ratona", 100, 225, 45, 70, 40, 0, "FF3A3A3A"),
-    ("Cartel iluminado con el logo", 6, 225, 4, 90, 90, 150, "FFEEB637"),
-    ("Mostrador y caja", 440, 180, 110, 60, 100, 0, "FF111111"),
-    ("Exhibidor de ropa", 465, 350, 55, 140, 160, 0, "FF333333"),
-    ("Estantería de productos", 480, 540, 35, 160, 180, 0, "FF2A2A2A"),
-    ("Lavacabezas", 250, 690, 70, 90, 90, 0, "FF111111"),
-    ("Inodoro", 450, 860, 40, 65, 45, 0, "FFFFFFFF"),
-    ("Lavamanos", 365, 880, 50, 40, 85, 0, "FFFFFFFF"),
-    ("Estante de depósito", 75, 880, 130, 35, 180, 0, "FF6B6357"),
+    # nombre, modelo del catálogo de Sweet Home 3D, x centro, y centro, ancho, profundidad, alto,
+    # elevación, ángulo en grados (0 = el frente mira hacia la vidriera opuesta), color ARGB (None = el original)
+    ("Puerta de entrada", "frontDoor.obj", 110, 0, 100, 23, 208, 0, 0, None),
+    ("Vidriera", "sliderWindow126x200.obj", 250, 0, 132, 32, 210, 0, 0, None),
+    ("Vidriera", "sliderWindow126x200.obj", 385, 0, 132, 32, 210, 0, 0, None),
+    ("Planta", "plant.obj", 30, 45, 40, 36, 70, 0, 0, None),
+    ("Sofá de espera", "sofa2.obj", 47, 225, 170, 72, 80, 0, 270, "FF1A1A1A"),
+    ("Mesa ratona", "coffeeTable.obj", 125, 225, 90, 45, 40, 0, 270, None),
+    ("Cartel iluminado con el logo", "texturableBox.obj", 12, 225, 4, 100, 100, 135, 0, None),
+    ("Mostrador y caja", "desk.obj", 458, 185, 110, 60, 100, 0, 90, "FF111111"),
+    ("Computadora de la caja", "laptop.obj", 462, 185, 33, 36, 19, 100, 90, None),
+    ("Maniquí", "mannequin.obj", 410, 300, 44, 53, 175, 0, 90, None),
+    ("Maniquí", "mannequin.obj", 410, 390, 44, 53, 175, 0, 90, None),
+    ("Estantería de ropa", "filledBookcase.obj", 472, 345, 120, 35, 180, 0, 90, None),
+    ("Vitrina de productos", "glassDoorCabinet.obj", 470, 500, 70, 39, 198, 0, 90, None),
+    ("Vitrina de productos", "glassDoorCabinet.obj", 470, 575, 70, 39, 198, 0, 90, None),
+    ("Lavacabezas", "washbasinWithCabinet.obj", 235, 861, 62, 57, 97, 0, 180, None),
+    ("Sillón de lavado", "armchair2.obj", 235, 790, 70, 70, 85, 0, 180, "FF111111"),
+    ("Inodoro", "toiletUnit.obj", 450, 850, 40, 80, 62, 0, 180, None),
+    ("Lavabo del baño", "washbasin.obj", 350, 800, 56, 47, 97, 0, 270, None),
+    ("Estantería del depósito", "bookcase.obj", 75, 870, 100, 40, 211, 0, 180, None),
 ]
 for i, y in enumerate((420, 530, 640), start=1):
     MUEBLES += [
-        (f"Espejo puesto {i}", 8, y, 6, 80, 100, 90, "FF9FB3BF"),
-        (f"Mesada puesto {i}", 30, y, 40, 90, 85, 0, "FF1A1A1A"),
-        (f"Sillón de barbero {i}", 115, y, 65, 65, 110, 0, "FF0A0A0A"),
+        (f"Espejo puesto {i}", "texturableBox.obj", 12, y, 3, 75, 100, 85, 0, "FFC9D6DC"),
+        (f"Mesada puesto {i}", "kitchenCabinet.obj", 33, y, 90, 45, 85, 0, 270, "FF1A1A1A"),
+        (f"Sillón de barbero {i}", "armchair2.obj", 120, y, 70, 72, 95, 0, 90, "FF0A0A0A"),
     ]
-ETIQUETAS = [("Entrada", 110, -40), ("Vidriera", 330, -40), ("Sala de espera", 160, 140),
-             ("Puestos de corte", 230, 530), ("Caja", 360, 180), ("Ropa", 400, 350),
-             ("Productos", 400, 540), ("Lavado", 250, 620)]
+# Color en el plano 2D para los muebles que conservan sus colores originales
+COLOR_PLANO = {
+    "plant.obj": "FF6E8F4E", "toiletUnit.obj": "FFFFFFFF", "washbasin.obj": "FFFFFFFF",
+    "washbasinWithCabinet.obj": "FFEDEDED", "glassDoorCabinet.obj": "FF8C6A4A", "bookcase.obj": "FF8C6A4A",
+    "filledBookcase.obj": "FF8C6A4A", "coffeeTable.obj": "FF8C6A4A", "frontDoor.obj": "FF8C6A4A",
+    "mannequin.obj": "FFD9C8B0", "laptop.obj": "FF9A958B", "sliderWindow126x200.obj": "FFB8D4E3",
+}
+ETIQUETAS = [("Entrada", 110, -40), ("Vidriera", 330, -40), ("Sala de espera", 160, 120),
+             ("Puestos de corte", 230, 530), ("Caja", 360, 180), ("Ropa", 355, 345),
+             ("Productos", 395, 540), ("Lavado", 235, 735)]
 
 CUBO_OBJ = """# Cubo unitario: forma provisoria de los muebles (reemplazar por el catálogo de Sweet Home 3D)
 v -0.5 0 -0.5
@@ -512,12 +532,14 @@ def plano_png() -> None:
     for _, x1, y1, x2, y2, esp, _ in MUROS:
         d.line((*p(x1, y1), *p(x2, y2)), fill=rgb(NEGRO), width=max(3, int(esp * s)))
     # los muebles van encima de los muros, y los muy finos (espejos, cartel) con un ancho mínimo visible
-    for nombre, x, y, w, pr, h, el, color in sorted(MUEBLES, key=lambda mueble: -mueble[3]):
-        x0, y0 = p(x - w / 2, y - pr / 2)
-        x1, y1 = p(x + w / 2, y + pr / 2)
+    for nombre, archivo, x, y, w, pr, h, el, ang, color in sorted(MUEBLES, key=lambda m: -min(m[4], m[5])):
+        fw, fd = (pr, w) if ang % 180 == 90 else (w, pr)  # huella en planta según la rotación
+        x0, y0 = p(x - fw / 2, y - fd / 2)
+        x1, y1 = p(x + fw / 2, y + fd / 2)
         if x1 - x0 < 7:
             x0, x1 = x0 + 4, x0 + 11
-        d.rectangle((x0, y0, x1, y1), fill=argb(color), outline=rgb(NEGRO))
+        relleno = MOSTAZA if nombre.startswith("Cartel") else "#" + (color or COLOR_PLANO.get(archivo, "FF2A2A2A"))[2:]
+        d.rectangle((x0, y0, x1, y1), fill=rgb(relleno), outline=rgb(NEGRO))
     # puerta de entrada: bisagra en (60, 0), abre hacia adentro
     d.arc((*p(-40, -100), *p(160, 100)), 0, 90, fill=(150, 60, 60), width=2)
     d.line((*p(60, 0), *p(60, 100)), fill=(150, 60, 60), width=3)
@@ -535,14 +557,121 @@ def plano_png() -> None:
     rx, ry = m + ANCHO * s + 40, m
     d.text((rx, ry), "REFERENCIAS", font=titulo(22), fill=rgb(NEGRO))
     refs = [("Pared de listones negros", "FF1A1A1A"), ("Cartel con el logo", "FFEEB637"),
-            ("Espejos", "FF9FB3BF"), ("Muebles", "FF111111"), ("Piso símil mármol", "FFE9E6E0")]
+            ("Espejos", "FFC9D6DC"), ("Vidriera", "FFB8D4E3"), ("Vitrinas y estanterías", "FF8C6A4A"),
+            ("Sillones y muebles negros", "FF111111"), ("Maniquíes", "FFD9C8B0"), ("Plantas", "FF6E8F4E"),
+            ("Piso símil mármol", "FFE9E6E0")]
     for i, (t, c) in enumerate(refs):
         y = ry + 40 + i * 34
         d.rectangle((rx, y, rx + 24, y + 22), fill=argb(c), outline=rgb(NEGRO))
         d.text((rx + 34, y + 2), t, font=texto(15), fill=rgb(NEGRO))
-    d.text((rx, ry + 230), f"Superficie: {ANCHO * FONDO / 10000:.0f} m²", font=texto(16, True), fill=rgb(NEGRO))
-    d.text((rx, ry + 256), "3 puestos de corte", font=texto(15), fill=rgb(NEGRO))
+    d.text((rx, ry + 360), f"Superficie: {ANCHO * FONDO / 10000:.0f} m²", font=texto(16, True), fill=rgb(NEGRO))
+    d.text((rx, ry + 386), "3 puestos de corte", font=texto(15), fill=rgb(NEGRO))
     guardar(img, DOCS / "plano-local.png")
+
+
+RECURSOS_SH3D = "com/eteks/sweethome3d/io/resources"
+
+
+def lib_sweet_home() -> Path | None:
+    """Carpeta lib de Sweet Home 3D (instalación común o de Microsoft Store)."""
+    candidatos = [Path(os.environ["SH3D_LIB"])] if os.environ.get("SH3D_LIB") else []
+    try:
+        r = subprocess.run(["powershell", "-NoProfile", "-Command", "(Get-AppxPackage eTeks.SweetHome3D).InstallLocation"],
+                           capture_output=True, text=True, timeout=30)
+        if r.stdout.strip():
+            candidatos.append(Path(r.stdout.strip()) / "Sweet Home 3D" / "lib")
+    except (OSError, subprocess.SubprocessError):
+        pass
+    candidatos += [Path(r"C:\Program Files\Sweet Home 3D\lib"), Path(r"C:\Program Files (x86)\Sweet Home 3D\lib"),
+                   Path("/Applications/Sweet Home 3D.app/Contents/Resources/Java")]
+    return next((c for c in candidatos if (c / "Furniture.jar").exists()), None)
+
+
+def leer_propiedades(z: zipfile.ZipFile, nombre: str) -> dict[str, str]:
+    texto = z.read(nombre).decode("latin-1")
+    texto = re.sub(r"\\\r?\n[ \t]*", "", texto)  # líneas que continúan en la siguiente
+    datos = {}
+    for linea in texto.splitlines():
+        if "=" in linea and not linea.lstrip().startswith(("#", "!")):
+            k, v = linea.split("=", 1)
+            datos[k.strip()] = re.sub(r"\\u([0-9a-fA-F]{4})", lambda m: chr(int(m.group(1), 16)), v.strip())
+    return datos
+
+
+def catalogo_sh3d(lib: Path) -> tuple[zipfile.ZipFile, dict[str, dict]]:
+    """Catálogo de muebles de Sweet Home 3D, indexado por el nombre del archivo del modelo."""
+    z = zipfile.ZipFile(lib / "Furniture.jar")
+    base = leer_propiedades(z, "com/eteks/sweethome3d/io/DefaultFurnitureCatalog.properties")
+    claves = ("id", "name", "width", "depth", "height", "icon", "modelRotation", "creator", "doorOrWindow",
+              "doorOrWindowWallThickness", "doorOrWindowWallDistance", "doorOrWindowWallCutOutOnBothSides")
+    catalogo, n = {}, 1
+    while f"id#{n}" in base:
+        datos = {k: base[f"{k}#{n}"] for k in claves if f"{k}#{n}" in base}
+        datos["modelo"] = base.get(f"model#{n}", "").lstrip("/")
+        catalogo.setdefault(datos["modelo"].rsplit("/", 1)[-1], datos)
+        n += 1
+    return z, catalogo
+
+
+def copiar_modelo(z: zipfile.ZipFile, ruta: str, contenido: dict[str, bytes]) -> str:
+    """Copia el modelo al archivo .sh3d; los de varias partes (con .mtl y texturas) van en su carpeta."""
+    carpeta, archivo = ruta.rsplit("/", 1)
+    if carpeta == RECURSOS_SH3D:
+        contenido[f"modelos/{archivo}"] = z.read(ruta)
+        return f"modelos/{archivo}"
+    sub = carpeta.rsplit("/", 1)[-1]
+    for n in z.namelist():
+        if n.startswith(carpeta + "/") and not n.endswith("/"):
+            contenido[f"modelos/{sub}/{n[len(carpeta) + 1:]}"] = z.read(n)
+    return f"modelos/{sub}/{archivo}"
+
+
+def textura_logo() -> bytes:
+    fondo = Image.new("RGB", (512, 512), rgb(NEGRO))
+    logo = Image.open(LOGO).convert("RGBA")
+    logo.thumbnail((440, 440))
+    fondo.paste(logo, ((512 - logo.width) // 2, (512 - logo.height) // 2), logo)
+    buf = io.BytesIO()
+    fondo.save(buf, "PNG")
+    return buf.getvalue()
+
+
+def muebles_xml(a, contenido: dict[str, bytes]) -> list[str]:
+    angulo = lambda g: f"{math.radians(g) % (2 * math.pi):.6f}" if g else None
+    lib = lib_sweet_home()
+    if not lib:
+        print("  (no se encontró Sweet Home 3D: los muebles quedan como bloques)")
+        contenido["cubo.obj"] = CUBO_OBJ.encode()
+        return [f"  <pieceOfFurniture {a(name=n, x=x, y=y, elevation=el, width=w, depth=pr, height=h, angle=angulo(g), color=c or 'FF2A2A2A', model='cubo.obj', backFaceShown='true')}/>"
+                for n, _, x, y, w, pr, h, el, g, c in MUEBLES]
+    z, catalogo = catalogo_sh3d(lib)
+    lineas, usados = [], {}
+    for nombre, archivo, x, y, w, pr, h, el, g, color in MUEBLES:
+        c = catalogo[archivo]
+        if archivo not in usados:
+            icono = f"iconos/{archivo.rsplit('.', 1)[0]}.png" if c.get("icon") else None
+            if icono:
+                contenido[icono] = z.read(c["icon"].lstrip("/"))
+            usados[archivo] = (copiar_modelo(z, c["modelo"], contenido), icono)
+        modelo, icono = usados[archivo]
+        attrs = dict(name=nombre, catalogId=c.get("id"), creator=c.get("creator"), x=x, y=y, elevation=el,
+                     width=w, depth=pr, height=h, angle=angulo(g), color=color, model=modelo, icon=icono,
+                     modelRotation=c.get("modelRotation"))
+        etiqueta = "pieceOfFurniture"
+        if c.get("doorOrWindow") == "true":
+            # En el archivo, el espesor de muro y la distancia se guardan como proporción de la profundidad
+            prof = float(c["depth"])
+            etiqueta = "doorOrWindow"
+            attrs.update(wallThickness=f"{float(c.get('doorOrWindowWallThickness', prof)) / prof:.4f}",
+                         wallDistance=f"{float(c.get('doorOrWindowWallDistance', 0)) / prof:.4f}",
+                         wallCutOutOnBothSides=c.get("doorOrWindowWallCutOutOnBothSides"))
+        if nombre.startswith("Cartel"):
+            contenido["texturas/logo.png"] = textura_logo()
+            textura = f'<texture {a(name="Logo Pola" + chr(39) + "s", image="texturas/logo.png", width=pr, height=h)}/>'
+            lineas.append(f"  <{etiqueta} {a(**attrs)}>{textura}</{etiqueta}>")
+        else:
+            lineas.append(f"  <{etiqueta} {a(**attrs)}/>")
+    return lineas
 
 
 def sweet_home() -> None:
@@ -553,8 +682,8 @@ def sweet_home() -> None:
     xml = ['<?xml version="1.0" encoding="UTF-8"?>',
            f'<home {a(name=nombre_casa, camera="topCamera", wallHeight=ALTO_MURO)}>',
            '  <property name="com.eteks.sweethome3d.SweetHome3D.FrameMaximized" value="true"/>']
-    for nombre, x, y, w, pr, h, el, color in MUEBLES:
-        xml.append(f"  <pieceOfFurniture {a(name=nombre, x=x, y=y, elevation=el, width=w, depth=pr, height=h, color=color, model='cubo.obj', icon='icono.png', backFaceShown='true')}/>")
+    contenido: dict[str, bytes] = {}
+    xml += muebles_xml(a, contenido)
     for mid, x1, y1, x2, y2, esp, color in MUROS:
         ini, fin = UNIONES.get(mid, (None, None))
         xml.append(f"  <wall {a(id=mid, wallAtStart=ini, wallAtEnd=fin, xStart=x1, yStart=y1, xEnd=x2, yEnd=y2, height=ALTO_MURO, thickness=esp, leftSideColor=color, rightSideColor=color)}/>")
@@ -567,16 +696,13 @@ def sweet_home() -> None:
         xml.append(f"  <label {a(x=x, y=y)}><text>{escape(txt)}</text></label>")
     xml.append("</home>")
 
-    icono = Image.new("RGB", (32, 32), rgb(MOSTAZA))
-    ruta_icono = Path(tempfile.mkdtemp()) / "icono.png"
-    icono.save(ruta_icono)
     ruta = MKT / "sweet-home" / "local-polas.sh3d"
     ruta.parent.mkdir(parents=True, exist_ok=True)
     with zipfile.ZipFile(ruta, "w", zipfile.ZIP_DEFLATED) as z:
         z.writestr("Home.xml", "\n".join(xml))
-        z.writestr("cubo.obj", CUBO_OBJ)
-        z.write(ruta_icono, "icono.png")
-    print(f"  {ruta.relative_to(RAIZ)}")
+        for nombre, datos in contenido.items():
+            z.writestr(nombre, datos)
+    print(f"  {ruta.relative_to(RAIZ)} ({len(MUEBLES)} muebles, {sum(1 for n in contenido if n.endswith('.obj'))} modelos 3D)")
 
 
 # ---------------------------------------------------------------- exportación de páginas HTML

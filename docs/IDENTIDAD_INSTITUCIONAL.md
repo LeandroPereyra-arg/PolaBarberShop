@@ -335,20 +335,32 @@ Cada sector del local tiene un QR que lleva a la parte del sitio que le sirve al
 
 **Archivo:** [marketing/sweet-home/local-polas.sh3d](../marketing/sweet-home/local-polas.sh3d), para abrir con [Sweet Home 3D](https://www.sweethome3d.com/es/), un programa gratuito.
 
-**Qué incluye:**
-- El local de **5 × 9 m (45 m²)** con sus paredes, la puerta de entrada y la vidriera.
-- **Ambientes:** salón, baño y depósito, con colores de piso.
-- **Pared de listones negros** del lado de los puestos de corte.
-- **Sala de espera:** banco, mesa ratona y el cartel iluminado con el logo.
-- **3 puestos de corte:** espejo, mesada y sillón de barbero cada uno.
-- **Mostrador y caja**, exhibidor de ropa, estantería de productos y lavacabezas.
-- Cotas de ancho y fondo, y etiquetas de cada zona.
+**Qué incluye:** el local de **5 × 9 m (45 m²)** con paredes, ambientes (salón, baño y depósito, con colores de piso), la pared de listones negros, cotas y etiquetas de cada zona, y **28 muebles con modelos 3D reales del catálogo de Sweet Home 3D**:
+
+| Zona | Muebles |
+|------|---------|
+| Fachada | Puerta de entrada y dos ventanas corredizas como vidriera; cortan la pared, así que se ve hacia afuera |
+| Sala de espera | Sofá, mesa de café, planta y el **cartel con el logo** (una caja con el logo como textura) |
+| Puestos de corte (×3) | Espejo, mesada y sillón de barbero |
+| Caja | Escritorio negro con computadora portátil |
+| Ropa | Dos maniquíes y una estantería |
+| Productos | Dos vitrinas |
+| Lavado | Lavacabezas con mueble y sillón |
+| Baño y depósito | Inodoro, lavabo y estantería |
+
+Los muebles están ubicados, orientados y con los colores de la marca (sillones y mesadas negros, espejos color vidrio). Se pueden mover, girar o cambiar por otros del catálogo desde el programa.
+
+**Verificación.** El archivo se comprobó con el propio código de Sweet Home 3D 7.9, usando el programa [`VerificarSH3D.java`](../marketing/sweet-home/VerificarSH3D.java):
+- Lo abrió con la misma configuración que usa la aplicación: 11 paredes, 3 ambientes, 28 muebles, 8 etiquetas y 2 cotas.
+- Cargó el modelo 3D de los 28 muebles, **sin errores**.
+
+Falta mirarlo en pantalla: abrirlo en el programa y recorrer la vista 3D.
 
 **Limitaciones, para tener en cuenta:**
 
-1. **Las medidas son estimadas** a partir de las fotos de Instagram; la distribución es una propuesta. Para que sea fiel hay que medir el local.
-2. **Los muebles son bloques simples** con el nombre y el color de cada uno. Para que se vean realistas, en Sweet Home 3D se reemplaza cada bloque por un mueble del catálogo: se lo selecciona, se lo borra y se arrastra el del catálogo a la misma posición.
-3. **El archivo no se pudo probar**, porque Sweet Home 3D no está instalado en la computadora donde se generó. Si no abre, la alternativa es importar el plano como fondo (*Plano → Importar imagen de fondo*, usando `docs/identidad/plano-local.png`, con escala de 5 m de ancho) y dibujar las paredes encima.
+1. **Las medidas son estimadas** a partir de las fotos de Instagram, y la distribución es una propuesta. Para que sea fiel hay que medir el local.
+2. **Algunos muebles son aproximaciones** de lo que trae el catálogo estándar. Por ejemplo, el sillón de barbero es una butaca y la mesada es un mueble de cocina; el catálogo no tiene muebles específicos de barbería. Se pueden reemplazar por modelos descargados de la web de Sweet Home 3D (*Muebles → Importar mueble*).
+3. Los modelos se copian de la instalación de Sweet Home 3D cuando se corre `python marketing/generar.py`. En una computadora sin el programa, el generador deja bloques en lugar de muebles.
 
 **Para obtener las vistas 3D:** con el archivo abierto, la vista 3D aparece abajo. Para guardar una imagen se usa *Vista 3D → Crear foto*, y *Vista 3D → Visita virtual* permite recorrer el local.
 
