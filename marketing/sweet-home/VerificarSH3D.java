@@ -29,7 +29,9 @@ public class VerificarSH3D {
       CompletableFuture<String> resultado = new CompletableFuture<>();
       ModelManager.getInstance().loadModel(mueble.getModel(), true, new ModelManager.ModelObserver() {
         public void modelUpdated(javax.media.j3d.BranchGroup modelo) {
-          resultado.complete("modelo OK");
+          // Las medidas propias del modelo permiten notar si dos muebles distintos cargaron el mismo
+          javax.vecmath.Vector3f tam = ModelManager.getInstance().getSize(modelo);
+          resultado.complete(String.format("modelo OK  (modelo de %.0f x %.0f x %.0f)", tam.x, tam.z, tam.y));
         }
 
         public void modelError(Exception ex) {
@@ -37,11 +39,16 @@ public class VerificarSH3D {
         }
       });
       String estado = resultado.get(60, TimeUnit.SECONDS);
-      if (!estado.equals("modelo OK")) {
+      if (!estado.startsWith("modelo OK")) {
         errores++;
       }
       System.out.printf("  %-30s %-13s %s%n", mueble.getName(),
           mueble instanceof HomeDoorOrWindow ? "puerta/ventana" : "", estado);
+      if (mueble.getTexture() != null) {
+        System.out.printf("      textura \"%s\": %.0f x %.0f cm, ajustada a la cara: %s, imagen: %s%n",
+            mueble.getTexture().getName(), mueble.getTexture().getWidth(), mueble.getTexture().getHeight(),
+            mueble.getTexture().isFittingArea(), mueble.getTexture().getImage());
+      }
     }
     System.out.println(errores == 0 ? "RESULTADO: todo OK" : "RESULTADO: " + errores + " errores");
     System.exit(errores == 0 ? 0 : 1);

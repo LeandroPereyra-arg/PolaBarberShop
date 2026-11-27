@@ -614,16 +614,21 @@ def catalogo_sh3d(lib: Path) -> tuple[zipfile.ZipFile, dict[str, dict]]:
 
 
 def copiar_modelo(z: zipfile.ZipFile, ruta: str, contenido: dict[str, bytes]) -> str:
-    """Copia el modelo al archivo .sh3d; los de varias partes (con .mtl y texturas) van en su carpeta."""
+    """Copia el modelo al archivo .sh3d.
+
+    Sweet Home 3D interpreta una ruta con carpeta como un modelo de varias partes y carga el primer
+    .obj de esa carpeta. Por eso los modelos de un solo archivo van sueltos en la raíz, y los de
+    varias partes (con .mtl y texturas) en una carpeta propia cada uno, como hace el programa.
+    """
     carpeta, archivo = ruta.rsplit("/", 1)
     if carpeta == RECURSOS_SH3D:
-        contenido[f"modelos/{archivo}"] = z.read(ruta)
-        return f"modelos/{archivo}"
+        contenido[archivo] = z.read(ruta)
+        return archivo
     sub = carpeta.rsplit("/", 1)[-1]
     for n in z.namelist():
         if n.startswith(carpeta + "/") and not n.endswith("/"):
-            contenido[f"modelos/{sub}/{n[len(carpeta) + 1:]}"] = z.read(n)
-    return f"modelos/{sub}/{archivo}"
+            contenido[f"{sub}/{n[len(carpeta) + 1:]}"] = z.read(n)
+    return f"{sub}/{archivo}"
 
 
 def textura_logo() -> bytes:
@@ -634,6 +639,25 @@ def textura_logo() -> bytes:
     buf = io.BytesIO()
     fondo.save(buf, "PNG")
     return buf.getvalue()
+
+
+def modelo_cartel(z: zipfile.ZipFile, ruta: str, contenido: dict[str, bytes]) -> str:
+    """Caja del catálogo con el logo como material propio en las caras laterales.
+
+    Una textura aplicada desde el plano no se ve en las fotos (Sweet Home 3D la escala según el
+    modelo); como material del modelo usa sus coordenadas de textura y se ve en cada cara.
+    """
+    carpeta, archivo = ruta.rsplit("/", 1)
+    contenido[f"cartel/{archivo}"] = z.read(ruta)
+    contenido["cartel/logo.png"] = textura_logo()
+    mtl = []
+    for linea in z.read(ruta.replace(".obj", ".mtl")).decode("latin-1").splitlines():
+        mtl.append(linea)
+        if linea.startswith("newmtl "):
+            cara = linea.split()[1]
+            mtl.append("map_Kd logo.png" if cara in ("left", "right", "front", "back") else "Kd 0.03 0.03 0.03")
+    contenido[f"cartel/{archivo.replace('.obj', '.mtl')}"] = "\n".join(mtl).encode("latin-1")
+    return f"cartel/{archivo}"
 
 
 def muebles_xml(a, contenido: dict[str, bytes]) -> list[str]:
@@ -649,11 +673,13 @@ def muebles_xml(a, contenido: dict[str, bytes]) -> list[str]:
     for nombre, archivo, x, y, w, pr, h, el, g, color in MUEBLES:
         c = catalogo[archivo]
         if archivo not in usados:
-            icono = f"iconos/{archivo.rsplit('.', 1)[0]}.png" if c.get("icon") else None
+            icono = f"icono-{archivo.rsplit('.', 1)[0]}.png" if c.get("icon") else None
             if icono:
                 contenido[icono] = z.read(c["icon"].lstrip("/"))
             usados[archivo] = (copiar_modelo(z, c["modelo"], contenido), icono)
         modelo, icono = usados[archivo]
+        if nombre.startswith("Cartel"):
+            modelo = modelo_cartel(z, c["modelo"], contenido)
         attrs = dict(name=nombre, catalogId=c.get("id"), creator=c.get("creator"), x=x, y=y, elevation=el,
                      width=w, depth=pr, height=h, angle=angulo(g), color=color, model=modelo, icon=icono,
                      modelRotation=c.get("modelRotation"))
@@ -665,12 +691,7 @@ def muebles_xml(a, contenido: dict[str, bytes]) -> list[str]:
             attrs.update(wallThickness=f"{float(c.get('doorOrWindowWallThickness', prof)) / prof:.4f}",
                          wallDistance=f"{float(c.get('doorOrWindowWallDistance', 0)) / prof:.4f}",
                          wallCutOutOnBothSides=c.get("doorOrWindowWallCutOutOnBothSides"))
-        if nombre.startswith("Cartel"):
-            contenido["texturas/logo.png"] = textura_logo()
-            textura = f'<texture {a(name="Logo Pola" + chr(39) + "s", image="texturas/logo.png", width=pr, height=h)}/>'
-            lineas.append(f"  <{etiqueta} {a(**attrs)}>{textura}</{etiqueta}>")
-        else:
-            lineas.append(f"  <{etiqueta} {a(**attrs)}/>")
+        lineas.append(f"  <{etiqueta} {a(**attrs)}/>")
     return lineas
 
 

@@ -340,7 +340,7 @@ Cada sector del local tiene un QR que lleva a la parte del sitio que le sirve al
 | Zona | Muebles |
 |------|---------|
 | Fachada | Puerta de entrada y dos ventanas corredizas como vidriera; cortan la pared, así que se ve hacia afuera |
-| Sala de espera | Sofá, mesa de café, planta y el **cartel con el logo** (una caja con el logo como textura) |
+| Sala de espera | Sofá, mesa de café, planta y el **cartel con el logo** (una caja con el logo como material propio) |
 | Puestos de corte (×3) | Espejo, mesada y sillón de barbero |
 | Caja | Escritorio negro con computadora portátil |
 | Ropa | Dos maniquíes y una estantería |
@@ -350,11 +350,30 @@ Cada sector del local tiene un QR que lleva a la parte del sitio que le sirve al
 
 Los muebles están ubicados, orientados y con los colores de la marca (sillones y mesadas negros, espejos color vidrio). Se pueden mover, girar o cambiar por otros del catálogo desde el programa.
 
-**Verificación.** El archivo se comprobó con el propio código de Sweet Home 3D 7.9, usando el programa [`VerificarSH3D.java`](../marketing/sweet-home/VerificarSH3D.java):
-- Lo abrió con la misma configuración que usa la aplicación: 11 paredes, 3 ambientes, 28 muebles, 8 etiquetas y 2 cotas.
-- Cargó el modelo 3D de los 28 muebles, **sin errores**.
+**Fotos 3D** — renderizadas con el motor de fotos de Sweet Home 3D 7.9, el mismo de *Vista 3D → Crear foto*, en calidad alta. Para que entre la luz y se vea el interior, las fotos se sacan sin techo.
 
-Falta mirarlo en pantalla: abrirlo en el programa y recorrer la vista 3D.
+![Vista aérea del local amueblado](identidad/sh3d-vista-aerea.jpg)
+
+*Vista aérea desde la vidriera.* Abajo, la entrada con la planta. A la derecha, sobre la pared de listones negros, la sala de espera y los 3 puestos de corte. A la izquierda, la caja, los maniquíes, la ropa y las vitrinas. Al fondo, el lavacabezas, el baño y el depósito.
+
+![Vista interior hacia los puestos de corte](identidad/sh3d-vista-interior.jpg)
+
+*Vista al entrar:* los puestos de corte con espejo, mesada y sillón, y el lavacabezas al fondo.
+
+![Sala de espera con el cartel del logo](identidad/sh3d-vista-espera.jpg)
+
+*Sala de espera:* el cartel con el logo de Pola's sobre la pared negra, el sofá, la mesa de café y la puerta de entrada.
+
+**Verificación**, con el propio código de Sweet Home 3D 7.9:
+
+| Herramienta | Qué hace | Resultado |
+|-------------|----------|-----------|
+| [`VerificarSH3D.java`](../marketing/sweet-home/VerificarSH3D.java) | Abre el archivo con la misma configuración que usa la aplicación y carga el modelo 3D de cada mueble, informando sus medidas | 11 paredes, 3 ambientes, 28 muebles, 8 etiquetas y 2 cotas; los 28 modelos cargan sin errores |
+| [`FotoSH3D.java`](../marketing/sweet-home/FotoSH3D.java) | Renderiza las tres fotos de arriba | Las fotos de esta sección |
+
+Las fotos sirvieron de control visual y destaparon dos errores, ya corregidos:
+1. **Todos los muebles salían con el modelo de la puerta.** Sweet Home 3D interpreta una ruta con carpeta como un modelo de varias partes y carga el primer `.obj` que encuentra en ella. Ahora cada modelo va suelto o en una carpeta propia, y el verificador informa las medidas de cada uno para detectar si se repiten.
+2. **El cartel salía negro.** Una textura aplicada desde el plano no se veía en la foto, así que el logo pasó a ser el material del propio modelo del cartel.
 
 **Limitaciones, para tener en cuenta:**
 
@@ -362,7 +381,7 @@ Falta mirarlo en pantalla: abrirlo en el programa y recorrer la vista 3D.
 2. **Algunos muebles son aproximaciones** de lo que trae el catálogo estándar. Por ejemplo, el sillón de barbero es una butaca y la mesada es un mueble de cocina; el catálogo no tiene muebles específicos de barbería. Se pueden reemplazar por modelos descargados de la web de Sweet Home 3D (*Muebles → Importar mueble*).
 3. Los modelos se copian de la instalación de Sweet Home 3D cuando se corre `python marketing/generar.py`. En una computadora sin el programa, el generador deja bloques en lugar de muebles.
 
-**Para obtener las vistas 3D:** con el archivo abierto, la vista 3D aparece abajo. Para guardar una imagen se usa *Vista 3D → Crear foto*, y *Vista 3D → Visita virtual* permite recorrer el local.
+**Para recorrerlo:** con el archivo abierto en Sweet Home 3D, la vista 3D aparece abajo. *Vista 3D → Visita virtual* permite caminar por el local, y *Vista 3D → Crear foto* guarda otras vistas. Las fotos de esta sección se vuelven a generar con `FotoSH3D.java`; las instrucciones están al principio de ese archivo.
 
 ---
 
