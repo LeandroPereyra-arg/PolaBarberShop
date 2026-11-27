@@ -1,10 +1,179 @@
 # Documentación técnica — Pola's Barber Shop
 
-Secciones 3 a 8: arquitectura, datos, comportamiento, restricciones, pruebas y despliegue.
+Secciones 1 a 9: introducción, descripción del sistema, arquitectura, datos, comportamiento, restricciones, pruebas, despliegue y ciclo de vida.
 Proyecto individual de **Leandro Pereyra**. La identidad de la empresa, la problemática y la resolución están en [PROYECTO.md](PROYECTO.md); las tareas, en los [issues del repositorio](https://github.com/LeandroPereyra-arg/PolaBarberShop/issues?q=is%3Aissue).
 
 > Los diagramas están escritos en Mermaid: GitHub los muestra como gráficos al abrir este archivo.
 > Cuando un punto describe algo que **todavía no está implementado**, se indica como *propuesto*.
+
+---
+
+## 1. Introducción
+
+### 1.1 Descripción general
+
+**Pola's Barber Shop** es una barbería de barrio con casi diez años de trayectoria. En septiembre de 2026 se mudó a Gral. Madariaga 186, Barrio Lindo, Malvinas Argentinas (Almirante Brown). Trabaja con un equipo de cuatro personas, según las fotos del local *(a validar)*, vende ropa con su marca y productos de barbería, y hasta ahora se comunica con sus clientes solo por Instagram y WhatsApp.
+
+Este proyecto es el **sitio web de la barbería**. Reúne en un solo lugar:
+
+- la presentación del local: servicios con precios, galería de cortes, historia de la mudanza, horarios y mapa;
+- un **sistema de turnos online**;
+- una **tienda** de ropa y productos, con carrito y **módulo de pago**;
+- un **panel** para que el local gestione turnos y ventas.
+
+Es un sitio estático hecho con HTML, CSS y JavaScript, sin frameworks, que se ejecuta completo en el navegador. Código fuente: [github.com/LeandroPereyra-arg/PolaBarberShop](https://github.com/LeandroPereyra-arg/PolaBarberShop).
+
+### 1.2 Propósito
+
+El sistema existe para resolver tres problemas concretos de la barbería, descritos en detalle en [PROYECTO.md](PROYECTO.md#3-problemática):
+
+1. **Los turnos se coordinan a mano** por mensajes, lo que interrumpe el trabajo, genera esperas y riesgo de superponer horarios.
+2. **Toda su presencia online depende de Instagram**: no aparecen en buscadores y la información básica (precios, horarios) no está publicada.
+3. **La ropa y los productos no tienen vidriera**: el cliente se entera de lo que venden solo si va al local.
+
+El propósito es que **el cliente pueda reservar y comprar solo, a cualquier hora, y que el local tenga ordenada la información de su día**.
+
+Como trabajo práctico, el proyecto además recorre el ciclo completo de un sistema web: análisis, diseño, desarrollo, pruebas, documentación y gestión de tareas.
+
+### 1.3 Alcance
+
+**Incluido en esta versión:**
+
+| Módulo | Qué abarca |
+|--------|------------|
+| Sitio institucional | Servicios con precio y duración, galería, historia del nuevo local, horarios, mapa, WhatsApp e Instagram |
+| Turnos | Reserva en cuatro pasos con disponibilidad por barbero, confirmación con código, consulta y cancelación con el teléfono |
+| Tienda | Catálogo con filtros y talles, carrito que se conserva al recargar |
+| Módulo de pago | Entrega (retiro o envío), datos del comprador, pago con crédito en cuotas, débito o efectivo/transferencia, y comprobante. **El cobro con tarjeta es simulado** |
+| Panel de administración | Turnos y ventas con sus estados, estadísticas del día, exportación de turnos a CSV |
+| Calidad | 57 pruebas automáticas y esta documentación |
+
+**Fuera del alcance de esta versión:**
+
+- Cobro real con tarjeta.
+- Servidor y base de datos compartida: los datos se guardan en cada navegador (ver 6.5).
+- Cuentas y contraseñas para los clientes.
+- Facturación electrónica.
+- Control de stock.
+- Recordatorios automáticos por WhatsApp o email.
+- Publicación del sitio en internet (propuesta en 8.3).
+
+### 1.4 Objetivos de la documentación
+
+- Describir **qué hace el sistema y cómo está construido**, para evaluarlo y defenderlo.
+- Servir de **referencia para quien lo mantenga o lo amplíe**, por ejemplo para conectar una base de datos.
+- Dejar registro de **las decisiones de diseño y sus motivos** (sección 9.2).
+- **Separar lo implementado y verificado de lo propuesto o pendiente**, para que nadie dé por hecho algo que no existe.
+
+| Lector | Qué le sirve |
+|--------|--------------|
+| Docentes de la cátedra | Todo el documento, para evaluar las consignas |
+| Dueño de la barbería | Secciones 1, 2 y 8.3: qué hace el sistema y qué falta para publicarlo |
+| Desarrollador que continúe el proyecto | Secciones 3, 4, 7 y 8: arquitectura, datos, pruebas y mantenimiento |
+
+Documentos relacionados: el [README](../README.md) (cómo ejecutarlo), [PROYECTO.md](PROYECTO.md) (identidad, problemática y resolución) y los [issues](https://github.com/LeandroPereyra-arg/PolaBarberShop/issues?q=is%3Aissue) (tareas).
+
+**Términos usados:**
+
+| Término | Significado |
+|---------|-------------|
+| Turno | Reserva de un servicio con un barbero, en una fecha y hora |
+| Bloque | Cada intervalo de 30 minutos en que se divide la agenda |
+| Checkout o módulo de pago | El proceso desde "Finalizar compra" hasta el comprobante |
+| Pasarela de pago | Servicio que autoriza un cobro con el banco. En este sistema es simulada |
+| Algoritmo de Luhn | Cálculo que detecta números de tarjeta mal escritos |
+| `localStorage` | Espacio del navegador donde el sistema guarda turnos, pedidos y carrito |
+| crd-ui | Librería que dibuja la tarjeta en pantalla |
+| Issue | Tarea registrada en el repositorio de GitHub |
+
+---
+
+## 2. Descripción del sistema
+
+### 2.1 Objetivo del sistema
+
+**Objetivo general:** brindar a Pola's Barber Shop un sitio web propio que permita a sus clientes **reservar turnos y comprar productos de forma autónoma**, y al local **organizar esa información**, respetando la identidad visual de la marca.
+
+**Objetivos específicos:**
+
+| # | Objetivo | Cómo se verifica | Estado |
+|---|----------|------------------|--------|
+| OE1 | Que el cliente reserve un turno sin intervención del local | Reserva completa en cuatro pasos (prueba W01) | ✔ |
+| OE2 | Evitar turnos superpuestos | Ningún barbero queda con dos turnos en el mismo horario (pruebas de integración) | ✔ Dentro de un mismo navegador (ver 6.5) |
+| OE3 | Publicar servicios, precios, horarios y ubicación | Visibles en la página principal | ✔ Con precios a validar (#11) |
+| OE4 | Vender ropa y productos con todo el proceso de compra | Compra de punta a punta con comprobante (W06 a W17) | ✔ Con cobro simulado |
+| OE5 | Darle al local una vista ordenada de turnos y ventas | Panel con estados y estadísticas (W18 y W19) | ✔ |
+| OE6 | Mantener la identidad de la marca | Colores, logo, texturas y tono tomados de su Instagram ([PROYECTO.md](PROYECTO.md#2-identidad-de-la-empresa)) | ✔ |
+| OE7 | Funcionar bien en celulares | Sin desbordes a 400 px (7.4) | ✔ |
+
+### 2.2 Stakeholders
+
+| Stakeholder | Interés | Qué espera del sistema | Participación |
+|-------------|---------|------------------------|---------------|
+| Dueño de la barbería | Que el negocio crezca y esté ordenado | Menos mensajes, agenda ordenada, ventas online, imagen profesional | Fuente de los requisitos a través de su Instagram. Pendiente: validar los datos del sistema (#11) |
+| Barberos | Trabajar sin interrupciones | Saber qué turnos tienen y no contestar mensajes mientras atienden | Usuarios del panel |
+| Clientes | Reservar y comprar sin vueltas | Reservar a cualquier hora desde el celular, ver precios, comprar | Usuarios del sitio |
+| Desarrollador (Leandro Pereyra) | Entregar un sistema que funcione | — | Análisis, diseño, desarrollo, pruebas y documentación |
+| Docentes de la cátedra | Evaluar el trabajo | Que cumpla las consignas de cada revisión | Definen requisitos académicos, como el módulo de pago con tarjeta |
+| Servicios externos (GitHub, Google, WhatsApp) | — | — | Alojamiento del código, mapas, fuentes y mensajería |
+| A futuro: pasarela de pago y organismos (ARCA, AAIP) | — | — | Cobro real y cumplimiento normativo (6.4) |
+
+### 2.3 Funciones principales
+
+```mermaid
+flowchart LR
+  CLI(["Cliente"])
+  BAR(["Barbería"])
+  subgraph Sistema["Sitio de Pola's Barber Shop"]
+    F1["Ver servicios, precios y ubicación"]
+    F2["Reservar turno"]
+    F3["Consultar y cancelar turno"]
+    F4["Comprar en la tienda"]
+    F5["Pagar y recibir comprobante"]
+    F6["Gestionar turnos"]
+    F7["Gestionar ventas"]
+    F8["Exportar turnos"]
+  end
+  CLI --- F1
+  CLI --- F2
+  CLI --- F3
+  CLI --- F4
+  CLI --- F5
+  BAR --- F6
+  BAR --- F7
+  BAR --- F8
+```
+
+**Para el cliente:**
+- Ver los servicios con precio y duración, la galería de cortes, la historia del local, los horarios y el mapa.
+- Reservar un turno: servicio → barbero (o "el primero libre") → día y horario disponible → datos → código de confirmación.
+- Avisar del turno por WhatsApp y agendarlo en su calendario.
+- Consultar sus turnos con el teléfono y cancelarlos.
+- Ver el catálogo, filtrar entre ropa y barbería, elegir talle y armar el carrito.
+- Finalizar la compra: entrega, datos, pago con crédito en cuotas, débito o efectivo/transferencia, y comprobante imprimible.
+- Escribir por WhatsApp desde cualquier parte del sitio.
+
+**Para la barbería (panel):**
+- Entrar con PIN.
+- Ver los turnos filtrados por fecha, barbero y estado; marcarlos como atendidos, cancelarlos o borrarlos.
+- Ver estadísticas: turnos de hoy y de los próximos 7 días, facturación estimada del día, cancelaciones y ventas del día.
+- Ver las ventas y marcarlas como pagadas o entregadas.
+- Exportar los turnos a CSV.
+
+**Configuración sin programar:** precios, horarios, barberos, productos, costo de envío, cuotas, PIN y WhatsApp se cambian en `js/data.js`.
+
+### 2.4 Restricciones generales
+
+- **Presupuesto cero:** sin servicios pagos. Por eso es un sitio estático, que se puede alojar gratis.
+- **Un solo desarrollador** y los plazos de las revisiones de la cátedra.
+- **Sin contacto directo con la barbería** durante el desarrollo: los datos salen de su Instagram público. Precios, horarios, nombres de barberos y productos son de ejemplo hasta validarlos (#11).
+- **Sin servidor:** los datos quedan en cada navegador (ver 6.5).
+- **Pago simulado:** no se pueden procesar tarjetas reales sin una pasarela certificada (ver 6.3 y 6.4).
+- **Consigna de la cátedra:** incorporar un componente de tarjeta de crédito (crd-ui o react-credit-cards).
+- **Uso desde el celular:** los clientes llegan desde Instagram, así que el sitio tiene que funcionar bien en pantallas chicas.
+- **Normativa argentina** de datos personales y defensa del consumidor (ver 6.4).
+
+El detalle técnico de estas restricciones está en la [sección 6](#6-restricciones-del-diseño).
 
 ---
 
@@ -461,7 +630,7 @@ Cómo se muestran:
 
 - **Navegadores:** versiones actuales de Chrome, Edge, Firefox y Safari. Las características más nuevas que usa el sitio son las unidades `svh`, `aspect-ratio` y los módulos de JavaScript, disponibles desde **Chrome/Edge 108, Firefox 101 y Safari 15.4** (2022). En navegadores más viejos el sitio puede verse desordenado o el módulo de pago no cargar.
 - **Probado en:** navegador basado en Chromium, a 1280 px (escritorio) y 400 px (celular). Falta probar en Safari de iPhone y en Firefox (ver 7.4).
-- **Dispositivos:** diseño adaptable desde 360 px de ancho. En celular el módulo de pago ocupa toda la pantalla y la tarjeta se ajusta al ancho.
+- **Dispositivos:** diseño adaptable a celulares, probado a 400 px de ancho. En celular el módulo de pago ocupa toda la pantalla y la tarjeta se ajusta al ancho.
 - **Se tiene que abrir desde un servidor** (`http://` o `https://`). Si se abre el archivo con doble clic (`file://`), el navegador no carga los módulos de JavaScript y el módulo de pago no funciona.
 - **JavaScript obligatorio:** sin JavaScript se ve el contenido institucional, pero no funcionan turnos, tienda ni pago.
 - **Idioma y moneda:** castellano rioplatense, pesos argentinos con formato `es-AR` ($18.000).
@@ -712,3 +881,140 @@ Desde ese momento, **cada `git push` a `main` actualiza el sitio** automáticame
 | Cambiar la estructura de los datos guardados | Nueva versión de clave (`_v2`) con conversión de los datos anteriores | Cuando se modifique el modelo |
 
 **Mejoras pendientes ya identificadas:** base de datos real (#12), validar datos con la barbería (#11), publicación y fotos reales (#13), exportación de ventas, botón de arrepentimiento y política de privacidad (6.4), recordatorios automáticos de turnos y control de stock.
+
+---
+
+## 9. Ciclo de vida del software
+
+El proyecto sigue un **modelo iterativo e incremental**: cada revisión de la cátedra fue un incremento que sumó funcionalidad sobre una versión que ya funcionaba. En cada incremento se repitió el ciclo de análisis, diseño, implementación, pruebas y entrega.
+
+```mermaid
+flowchart LR
+  A["Análisis de requisitos"] --> D["Diseño"]
+  D --> I["Implementación"]
+  I --> P["Pruebas"]
+  P --> E["Entrega y revisión"]
+  E -->|"nuevo incremento"| A
+```
+
+| Incremento | Fecha | Qué se entregó | Registro |
+|------------|-------|----------------|----------|
+| 1. Sitio y turnos | 14/09/2026 | Sitio con la identidad de la marca, sistema de turnos, tienda con pedido por WhatsApp y panel de turnos. Actualización por la mudanza al nuevo local | Commit `39760aa` |
+| 2. Repositorio y gestión | 12/10/2026 | README; documentación de identidad, problemática y resolución; tareas como issues | Commits `6c5cfed`, `83a0fbf` y `6000d66`; issues #1 a #13 |
+| 3. Módulo de pago | 26/11/2026 | Finalizar compra, pago con tarjeta (crd-ui), comprobante y ventas en el panel | Commit `d7b2c18`; issue #14 |
+| 4. Calidad y documentación técnica | 26/11/2026 | Lógica de pago separada, 57 pruebas automáticas, logo optimizado y documentación de las secciones 1 a 9 | Commits `eec0a2b`, `72796e3` y `e57ee07`; issues #15 y #16 |
+
+Los issues #1 a #10 se cargaron el 12/10 para registrar trabajo ya hecho, cuando se organizó el repositorio. Desde entonces cada tarea se abre como issue y se cierra con el commit que la termina.
+
+### 9.1 Análisis de requisitos
+
+**Fuentes de los requisitos:**
+
+| Fuente | Qué aportó |
+|--------|------------|
+| Instagram de la barbería (biografía, publicaciones, historias destacadas) | Identidad visual, servicios, dirección, la mudanza, el tono de comunicación y que venden ropa |
+| Consignas y revisiones de la cátedra | Funcionalidades obligatorias: turnos, tienda, módulo de pago con tarjeta y documentación |
+| Prácticas habituales en sistemas de turnos y tiendas online | Reserva en pasos, disponibilidad en tiempo real, carrito, comprobante |
+| Normativa argentina | Requisitos legales (ver 6.4) |
+
+**Técnicas usadas:** análisis de fuentes públicas (no hubo entrevista con el dueño; queda pendiente en #11), análisis de las consignas, definición de escenarios (5.1) y criterios de aceptación (7.5), y priorización en tres niveles: **Debe**, **Debería** y **Podría**.
+
+**Requisitos funcionales:**
+
+| ID | Requisito | Prioridad | Estado | Verificación |
+|----|-----------|-----------|--------|--------------|
+| RF-01 | Mostrar los servicios con precio y duración | Debe | ✔ | Inspección |
+| RF-02 | Mostrar horarios, dirección y mapa del nuevo local | Debe | ✔ | Inspección |
+| RF-03 | Reservar un turno eligiendo servicio, barbero, día y horario | Debe | ✔ | W01, `reservas.test` |
+| RF-04 | Ofrecer solo horarios libres y dentro del horario de atención | Debe | ✔ | `turnos.test`, `reservas.test` |
+| RF-05 | Asignar automáticamente un barbero ("el primero libre") | Debería | ✔ | `turnos.test`, `reservas.test` |
+| RF-06 | Confirmar el turno con código, aviso por WhatsApp y alta en el calendario | Debe | ✔ | W01 |
+| RF-07 | Consultar y cancelar turnos con el teléfono | Debe | ✔ | W03, `reservas.test` |
+| RF-08 | Catálogo de ropa y productos con filtros y talles | Debe | ✔ | W04, W05 |
+| RF-09 | Carrito que se conserva al recargar la página | Debe | ✔ | Pruebas del módulo de pago |
+| RF-10 | Elegir la forma de entrega y calcular el envío | Debe | ✔ | W07, `pago.test` |
+| RF-11 | Pagar con crédito en cuotas, débito o efectivo/transferencia | Debe | ✔ | W12, W14, W17 |
+| RF-12 | Mostrar la tarjeta en pantalla y validar sus datos (consigna de la cátedra) | Debe | ✔ | W09, W15, `pago.test` |
+| RF-13 | Informar los pagos rechazados y ofrecer alternativas | Debe | ✔ | W10, W16 |
+| RF-14 | Comprobante de compra imprimible | Debería | ✔ | W12 (impresión pendiente, W20) |
+| RF-15 | Panel con acceso restringido | Debe | ✔ De demostración | W19 |
+| RF-16 | Gestionar los estados de turnos y ventas | Debe | ✔ | W18, `pedidos.test` |
+| RF-17 | Estadísticas del día | Debería | ✔ | W18, W19 |
+| RF-18 | Exportar turnos a CSV | Podría | ✔ | W21 pendiente |
+| RF-19 | Exportar ventas | Podría | Pendiente | — |
+| RF-20 | Recordatorios automáticos de turnos | Podría | Pendiente | — |
+| RF-21 | Control de stock | Podría | Pendiente | — |
+
+**Requisitos no funcionales:**
+
+| ID | Requisito | Estado | Verificación |
+|----|-----------|--------|--------------|
+| RNF-01 | Respetar la identidad visual de la marca | ✔ | [PROYECTO.md](PROYECTO.md#identidad-visual) |
+| RNF-02 | Funcionar en celulares | ✔ | 7.4 (400 px) |
+| RNF-03 | Primera carga menor a 300 KB sin contar las fotos | ✔ 254 KB | 3.4 |
+| RNF-04 | No guardar nunca los datos completos de la tarjeta | ✔ | `pago.test`, `pedidos.test`, W13 |
+| RNF-05 | Mostrar como texto lo que escriben los usuarios (protección contra XSS) | ✔ | `utils.test` |
+| RNF-06 | Poder cambiar precios, horarios y productos sin programar | ✔ | `js/data.js` |
+| RNF-07 | Sin costos de infraestructura | ✔ | 2.4, 8.2 |
+| RNF-08 | Módulo de pago usable con teclado | ✔ | 7.4 |
+| RNF-09 | Cumplir la normativa de datos personales y de venta online | Pendiente | 6.4 |
+
+**Pendiente de validar con la barbería (#11):** precios, horarios de atención, nombres de los barberos, productos que venden, si hacen envíos a domicilio, costo del envío y planes de cuotas.
+
+### 9.2 Diseño
+
+A partir de los requisitos se diseñaron la arquitectura (sección 3), el modelo de datos (sección 4), el comportamiento (sección 5) y la interfaz.
+
+**Decisiones de diseño:**
+
+| # | Decisión | Alternativas consideradas | Motivo |
+|---|----------|---------------------------|--------|
+| D1 | Sitio estático, sin servidor | PHP con MySQL; Node.js con base de datos | Presupuesto cero y alojamiento gratuito. La capa de datos quedó aislada para sumar un servidor después |
+| D2 | JavaScript sin framework | React, Vue | Sitio chico, carga rápida y sin paso de compilación: funciona en cualquier hosting |
+| D3 | Guardar los datos en `localStorage` | Firebase u otra base en la nube | Sin cuentas ni costos. La limitación está asumida y documentada (6.5) |
+| D4 | crd-ui para la tarjeta | react-credit-cards (la otra opción de la cátedra) | crd-ui funciona sin React y no tiene dependencias; react-credit-cards necesita React, que el proyecto no usa |
+| D5 | Copiar crd-ui dentro del repositorio | Cargarla desde un CDN | Versión fija, funciona sin internet durante una presentación y el código quedó revisado |
+| D6 | Separar la lógica del pago en `js/pago.js` | Dejar todo en `checkout.js` | Permite probar validaciones y totales con pruebas automáticas, sin navegador |
+| D7 | Comunicar los módulos por eventos | Que un módulo llame directamente al otro | Las pantallas no dependen entre sí |
+| D8 | Copiar el precio en cada turno y pedido | Guardar solo la referencia al servicio o producto | Si cambia un precio, se conserva lo que realmente se cobró |
+| D9 | Identificar al cliente por su teléfono, sin cuenta | Registro con usuario y contraseña | Es como la barbería ya se comunica con sus clientes, y reservar tiene menos pasos |
+| D10 | Pasarela simulada con tarjetas de prueba | Integrar una pasarela real | No se pueden procesar tarjetas sin una pasarela certificada; así se pueden mostrar todos los casos |
+| D11 | Proceso en pasos con resumen siempre visible | Un único formulario largo | Menos errores, y el cliente ve el total en todo momento |
+
+**Diseño de la interfaz:**
+
+- **Identidad visual:** paleta negra, blanca y mostaza (`#e8a21c`), tipografías Anton (títulos), Archivo (texto) y Yellowtail (palabras manuscritas), mármol con vetas doradas y listones negros como el local. El detalle está en [PROYECTO.md](PROYECTO.md#identidad-visual).
+- **Pensado para el celular:** botones grandes, una columna en pantallas chicas y el pago en pantalla completa.
+- **Pasos guiados:** en las elecciones únicas (servicio, barbero) se avanza solo; el paso actual se ve en una barra de progreso.
+- **Errores donde ocurren:** cada mensaje aparece debajo del campo, en castellano y explicando cómo corregirlo.
+- **Acciones claras:** el botón final dice el monto ("Pagar $49.500") y la simulación del pago se avisa en pantalla.
+
+**Mapa de navegación:**
+
+```mermaid
+flowchart TD
+  INICIO["Inicio"] --> SERV["Servicios"]
+  INICIO --> TUR["Turnos"]
+  INICIO --> TIENDA["Tienda"]
+  INICIO --> CORTES["Cortes"]
+  INICIO --> LOCAL["El local"]
+  SERV -->|"Reservar este servicio"| TUR
+  TUR --> T1["1. Servicio"]
+  T1 --> T2["2. Barbero"]
+  T2 --> T3["3. Día y hora"]
+  T3 --> T4["4. Datos"]
+  T4 --> T5["Ticket con código"]
+  TUR --> MIS["Mis turnos"]
+  TIENDA --> CARR["Carrito"]
+  CARR -->|"Finalizar compra"| P1["1. Entrega"]
+  P1 --> P2["2. Datos"]
+  P2 --> P3["3. Pago"]
+  P3 --> RES{"Resultado"}
+  RES -->|"Aprobado"| COMP["Comprobante"]
+  RES -->|"Rechazado"| P3
+  CARR -->|"Pedir por WhatsApp"| WA["WhatsApp"]
+  ADMIN["admin.html"] --> PIN["PIN"]
+  PIN --> PANEL["Turnos y ventas"]
+```
+
+**Diagramas del diseño en este documento:** componentes (3.2), despliegue actual y propuesto (3.3), entidad-relación (4.1), secuencia de la reserva y de la compra (5.1), inicio de sesión del panel (5.2) y mapa de navegación (9.2).

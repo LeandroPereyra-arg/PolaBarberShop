@@ -7,7 +7,7 @@ Proyecto individual de **Leandro Pereyra**.
 Documentación:
 
 - [docs/PROYECTO.md](docs/PROYECTO.md): asignación de tareas, identidad de la empresa, problemática y posible resolución.
-- [docs/DOCUMENTACION_TECNICA.md](docs/DOCUMENTACION_TECNICA.md): arquitectura, diseño de datos, comportamiento, restricciones, pruebas y despliegue (secciones 3 a 8).
+- [docs/DOCUMENTACION_TECNICA.md](docs/DOCUMENTACION_TECNICA.md): introducción, descripción del sistema, arquitectura, diseño de datos, comportamiento, restricciones, pruebas, despliegue y ciclo de vida (secciones 1 a 9).
 
 ## Funcionalidades
 
