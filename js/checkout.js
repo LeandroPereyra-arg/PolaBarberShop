@@ -10,6 +10,7 @@
    Vista previa de la tarjeta: crd-ui 0.13.2 (MIT), en vendor/crd-ui.
    ============================================================ */
 import { createCard, detectBrand, getBrandSpec, formatCardNumber, normalizeDigits } from "../vendor/crd-ui/index.js";
+import { validadores, calcularTotales, resultadoPago, datosPagoAprobado } from "./pago.js";
 
 const root = $("#checkout");
 const panel = $(".checkout__panel", root);
@@ -53,65 +54,12 @@ const esTarjeta = () => state.metodo === "credito" || state.metodo === "debito";
 const local = () => CONFIG.direccion.split(" — ")[0];
 const esperar = ms => new Promise(r => setTimeout(r, ms));
 
-function luhn(digits) {
-  let suma = 0, doble = false;
-  for (let i = digits.length - 1; i >= 0; i--) {
-    let d = +digits[i];
-    if (doble) { d *= 2; if (d > 9) d -= 9; }
-    suma += d;
-    doble = !doble;
-  }
-  return digits.length > 0 && suma % 10 === 0;
-}
+const totales = (n = state.cuotas, metodo = state.metodo) =>
+  calcularTotales({ subtotal: Carrito.subtotal(), entrega: state.entrega, metodo, cuotas: n }, CONFIG);
 
-function totales(n = state.cuotas, metodo = state.metodo) {
-  const subtotal = Carrito.subtotal();
-  const envio = state.entrega === "envio" && subtotal < CONFIG.envio.gratisDesde ? CONFIG.envio.costo : 0;
-  const base = subtotal + envio;
-  const credito = metodo === "credito";
-  const plan = CONFIG.cuotas.find(c => c.n === n) || CONFIG.cuotas[0];
-  const recargo = credito ? Math.round(base * plan.recargo) : 0;
-  const total = base + recargo;
-  const cuotas = credito ? plan.n : 1;
-  return { subtotal, envio, recargo, total, cuotas, valorCuota: Math.ceil(total / cuotas) };
-}
-
-// ---------- Validaciones ----------
-const V = {
-  nombre: v => (v.trim().length >= 3 ? "" : "Ingresá tu nombre y apellido"),
-  telefono: v => (normTel(v).length >= 8 ? "" : "Ingresá un teléfono válido (mínimo 8 números)"),
-  email: v => (/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim()) ? "" : "Ingresá un email válido, por ejemplo nombre@mail.com"),
-  direccion: v => (/\d/.test(v) && v.trim().length >= 5 ? "" : "Ingresá calle y número"),
-  localidad: v => (v.trim().length >= 3 ? "" : "Ingresá la localidad"),
-  cp: v => (/^(\d{4}|[a-z]\d{4}[a-z]{3})$/i.test(v.trim()) ? "" : "Código postal de 4 números (o CPA, ej. B1851ABC)"),
-  numero: v => {
-    const d = normalizeDigits(v);
-    if (!d) return "Ingresá el número de la tarjeta";
-    const marca = detectBrand(d);
-    if (!marca) return "No reconocemos esa tarjeta";
-    const spec = getBrandSpec(marca);
-    if (!spec.lengths.includes(d.length)) return `Una ${spec.displayName} tiene ${spec.lengths.join(" o ")} números`;
-    if (!luhn(d)) return "El número no es válido, revisalo";
-    if (state.metodo === "debito" && marca === "amex") return "American Express no tiene tarjetas de débito";
-    return "";
-  },
-  titular: v => (/^[a-záéíóúüñ' .-]{3,}$/i.test(v.trim()) && /\s/.test(v.trim()) ? "" : "Escribí nombre y apellido como figuran en la tarjeta"),
-  vencimiento: v => {
-    const m = /^(\d{2})\/(\d{2})$/.exec(v.trim());
-    if (!m) return "Usá el formato MM/AA";
-    const mes = +m[1], anio = 2000 + +m[2];
-    if (mes < 1 || mes > 12) return "El mes tiene que ser entre 01 y 12";
-    const hoy = new Date();
-    if (new Date(anio, mes, 0, 23, 59, 59) < hoy) return "La tarjeta está vencida";
-    if (anio > hoy.getFullYear() + 15) return "Revisá el año de vencimiento";
-    return "";
-  },
-  cvc: v => {
-    const marca = detectBrand(digitosTarjeta());
-    const largo = marca ? getBrandSpec(marca).cvcLength : 3;
-    return new RegExp(`^\\d{${largo}}$`).test(v.trim()) ? "" : `El código de seguridad tiene ${largo} números`;
-  },
-};
+// ---------- Validaciones (las reglas están en js/pago.js) ----------
+const V = Object.fromEntries(Object.entries(validadores).map(([campo, regla]) =>
+  [campo, valor => regla(valor, { metodo: state.metodo, numero: inputOf("numero").value })]));
 
 function setErr(name, msg) {
   const f = fieldOf(name);
@@ -317,8 +265,7 @@ function limpiarTarjeta() {
 // ---------- Pago ----------
 async function simularPasarela(numero) {
   await esperar(1800);
-  const prueba = TARJETAS_PRUEBA.find(t => normalizeDigits(t.numero) === numero);
-  const resultado = prueba ? prueba.resultado : "aprobada";
+  const resultado = resultadoPago(numero, TARJETAS_PRUEBA);
   return resultado === "aprobada"
     ? { ok: true, autorizacion: String(Math.floor(100000 + Math.random() * 900000)) }
     : { ok: false, ...RESULTADOS[resultado] };
@@ -340,14 +287,10 @@ async function confirmar() {
     let pago;
     if (esTarjeta()) {
       const numero = digitosTarjeta();
-      const marca = detectBrand(numero);
       mostrarProcesando(t);
       const r = await simularPasarela(numero);
       if (!r.ok) return mostrarRechazo(r);
-      pago = {
-        metodo: state.metodo, marca, marcaNombre: nombreMarca(marca), last4: numero.slice(-4),
-        cuotas: t.cuotas, valorCuota: t.valorCuota, autorizacion: r.autorizacion, estado: "aprobado",
-      };
+      pago = datosPagoAprobado({ numero, metodo: state.metodo, totales: t, autorizacion: r.autorizacion });
       limpiarTarjeta();
     } else {
       pago = { metodo: "local", estado: "pendiente" };
