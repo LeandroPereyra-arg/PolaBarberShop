@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Manual de identidad · Pola's Barber Shop</title>
+  <link rel="stylesheet" href="marca.css">
+  <style>
+    @page { size: A4; margin: 0; }
+    .hoja { position: relative; display: flex; flex-direction: column; width: 210mm; height: 297mm; padding: 18mm 16mm 16mm; overflow: hidden; break-after: page; background: #fff; }
+    .hoja:last-child { break-after: auto; }
+    .hoja > header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8mm; padding-bottom: 3mm; border-bottom: .5mm solid var(--negro); font-size: 8pt; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+    .hoja > header span:last-child { color: var(--mostaza-osc); }
+    h1 { margin: 0 0 5mm; font-size: 36pt; }
+    h2 { margin: 6mm 0 2mm; font-size: 16pt; }
+    p, li, td { font-size: 10pt; line-height: 1.5; }
+    .lamina-img { width: 100%; border: .3mm solid #e2ddd2; border-radius: 2mm; margin: 2mm 0 4mm; }
+    .dos { display: grid; grid-template-columns: 1fr 1fr; gap: 8mm; }
+    .tono td { vertical-align: top; padding: 2mm; border-bottom: .2mm solid #e2ddd2; }
+    .tono th { text-align: left; font-size: 9pt; padding: 2mm; background: var(--marmol); }
+    .si { color: #276738; font-weight: 700; } .no { color: #9b2c2c; font-weight: 700; }
+    .tipo { padding: 5mm 0; border-bottom: .2mm solid #e2ddd2; }
+    .tipo .muestra { line-height: 1.05; }
+    .tipo small { display: block; margin-top: 2mm; color: #6b665c; font-size: 9pt; }
+    .portada { justify-content: center; align-items: center; text-align: center; }
+    .portada img { width: 105mm; filter: drop-shadow(0 0 10mm rgba(238, 182, 55, .4)); }
+    .portada h1 { margin-top: 12mm; font-size: 42pt; color: var(--blanco); }
+    .portada .script { font-size: 26pt; }
+    .portada small { position: absolute; bottom: 14mm; left: 0; right: 0; color: #b9b4aa; font-size: 9pt; letter-spacing: .1em; }
+    .partes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4mm; margin: 3mm 0; }
+    .partes div { padding: 4mm; background: var(--marmol); border-radius: 2mm; font-size: 9pt; }
+    .partes b { display: block; font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 13pt; text-transform: uppercase; }
+    .texturas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4mm; }
+    .texturas div { height: 34mm; border-radius: 2mm; border: .3mm solid #ddd; }
+    .texturas img { height: 34mm; width: 100%; object-fit: cover; border-radius: 2mm; }
+    .pie { margin-top: auto; padding-top: 4mm; color: #6b665c; font-size: 8pt; }
+  </style>
+</head>
+<body>
+
+<section class="hoja portada listones">
+  <img src="../img/logo.png" alt="Pola's Barber Shop">
+  <h1 class="anton">Manual de identidad</h1>
+  <span class="script">desde el barrio</span>
+  <small>POLA'S BARBER SHOP · GRAL. MADARIAGA 186 · 2026</small>
+</section>
+
+<section class="hoja">
+  <header><span>Pola's Barber Shop</span><span>01 · La marca</span></header>
+  <h1 class="anton">La marca</h1>
+  <p>Pola's Barber Shop es una barbería de barrio con casi diez años de trayectoria, que en 2026 se mudó a un local nuevo en Gral. Madariaga 186, Barrio Lindo, Malvinas Argentinas. Su identidad combina la <b>barbería clásica</b> (sello circular, navaja, tijera, peine, letra manuscrita) con la <b>cultura urbana del barrio</b> (fades, color, ropa propia).</p>
+  <h2 class="anton">Valores</h2>
+  <ul>
+    <li><b>Cercanía:</b> trato de amigos y vecinos; agradecer siempre a los clientes.</li>
+    <li><b>Oficio:</b> cortes prolijos, terminación a navaja, mejora constante.</li>
+    <li><b>Esfuerzo propio:</b> el local nuevo lo armó el equipo con sus manos.</li>
+    <li><b>Comodidad:</b> un lugar cuidado, con buena atención, "lo que siempre nos caracterizó".</li>
+  </ul>
+  <h2 class="anton">Tono de voz</h2>
+  <p>Directo, cálido y barrial. Tuteo y voseo rioplatense. Frases cortas y con energía.</p>
+  <table class="tono" style="width:100%;border-collapse:collapse">
+    <tr><th style="width:50%">Así sí</th><th>Así no</th></tr>
+    <tr><td class="si">"Reservá tu turno en menos de un minuto."</td><td class="no">"Solicite su turno mediante el formulario."</td></tr>
+    <tr><td class="si">"¡Gracias por bancarnos siempre!"</td><td class="no">"Agradecemos su preferencia."</td></tr>
+    <tr><td class="si">"¿No podés venir? Cancelalo y le dejás el lugar a otro."</td><td class="no">"Las cancelaciones deben realizarse con antelación."</td></tr>
+  </table>
+  <p class="pie">Valores y tono relevados de las publicaciones de la cuenta @polasbarbershop.</p>
+</section>
+
+<section class="hoja">
+  <header><span>Pola's Barber Shop</span><span>02 · Logotipo</span></header>
+  <h1 class="anton">Logotipo</h1>
+  <p>El logo es un <b>isologotipo</b>: el nombre y el símbolo forman una sola pieza y no se separan. Tiene tres partes:</p>
+  <div class="partes">
+    <div><b>Pola's</b>Letra manuscrita: el nombre, con personalidad y movimiento.</div>
+    <div><b>Barber shop</b>Imprenta gruesa: el rubro, clara y legible.</div>
+    <div><b>Sello</b>Círculo con puntos, tijera, navaja y peine: el oficio.</div>
+  </div>
+  <img class="lamina-img" src="../docs/identidad/logo-resguardo.png" alt="Área de resguardo y tamaño mínimo">
+  <p>Se usa siempre a partir del archivo original, sin redibujarlo. Hoy solo existe como imagen de mapa de bits tomada de Instagram: <b>se recomienda vectorizarlo</b> para impresiones grandes (marquesina, vinilos, bordados).</p>
+</section>
+
+<section class="hoja">
+  <header><span>Pola's Barber Shop</span><span>03 · Versiones e isotipo</span></header>
+  <h1 class="anton">Versiones</h1>
+  <img class="lamina-img" src="../docs/identidad/logo-versiones.png" alt="Versiones del logo">
+  <ul>
+    <li><b>Color sobre fondo claro u oscuro:</b> versión principal. El borde mostaza lo separa de cualquier fondo.</li>
+    <li><b>Una tinta negra:</b> sellos, bolsas de papel, fotocopias, grabado.</li>
+    <li><b>Una tinta calada en blanco:</b> vinilo de vidriera, prendas negras, fondos fotográficos oscuros.</li>
+  </ul>
+  <div class="dos" style="align-items:center;margin-top:4mm">
+    <img src="isotipo.svg" alt="Isotipo" style="width:62mm;margin:auto">
+    <div>
+      <h2 class="anton" style="margin-top:0">Isotipo</h2>
+      <p>El sello circular del logo, sin el texto. Se usa cuando el logo completo quedaría ilegible: <b>favicon, foto de perfil chica, stickers, sellos de fidelidad</b>. Nunca reemplaza al logo en la fachada ni en la papelería.</p>
+    </div>
+  </div>
+</section>
+
+<section class="hoja">
+  <header><span>Pola's Barber Shop</span><span>04 · Color</span></header>
+  <h1 class="anton">Color</h1>
+  <img class="lamina-img" src="../docs/identidad/paleta.png" alt="Paleta institucional">
+  <img class="lamina-img" src="../docs/identidad/circulo-cromatico.png" alt="Círculo cromático">
+  <p>El negro y el blanco hueso son la base; el <b>mostaza</b> es el único acento y se usa en poca superficie. El mostaza del logo (#EEB637) se mide del archivo original; en la web se usa uno algo más oscuro (#E8A21C) para que los botones contrasten mejor.</p>
+</section>
+
+<section class="hoja">
+  <header><span>Pola's Barber Shop</span><span>05 · Tipografía</span></header>
+  <h1 class="anton">Tipografía</h1>
+  <div class="tipo"><div class="muestra anton" style="font-size:44pt">Anton</div><div class="muestra anton" style="font-size:18pt">ABCDEFGHIJKLMNÑOPQRSTUVWXYZ 0123456789 $</div><small>Títulos, precios y botones. Siempre en mayúsculas. Remite al "BARBER" del logo.</small></div>
+  <div class="tipo"><div class="muestra" style="font-size:40pt;font-weight:800">Archivo</div><div class="muestra" style="font-size:14pt">Aa Bb Cc Dd Ee Ff Gg Hh Ii Jj Kk Ll Mm Nn Ññ Oo · Regular, <b>Bold</b>, <b style="font-weight:800">ExtraBold</b></div><small>Textos, descripciones y formularios. Muy legible en pantallas chicas.</small></div>
+  <div class="tipo"><div class="muestra script" style="font-size:48pt">Yellowtail</div><div class="muestra script" style="font-size:22pt">desde el barrio · reservá · ¡gracias!</div><small>Palabras sueltas sobre los títulos, siempre en mostaza y levemente inclinadas. Remite al "Pola's" del logo. Nunca para textos largos.</small></div>
+  <h2 class="anton">Jerarquía</h2>
+  <p><span class="script" style="font-size:18pt">palabra manuscrita</span> + <span class="anton" style="font-size:18pt">TÍTULO EN ANTON</span> + texto en Archivo. Es la misma composición del logo: manuscrita arriba, imprenta gruesa abajo.</p>
+  <p class="pie">Las tres familias son de Google Fonts, con licencia libre (SIL Open Font License).</p>
+</section>
+
+<section class="hoja">
+  <header><span>Pola's Barber Shop</span><span>06 · Usos incorrectos y texturas</span></header>
+  <h1 class="anton">Usos incorrectos</h1>
+  <img class="lamina-img" src="../docs/identidad/logo-usos-incorrectos.png" alt="Usos incorrectos del logo">
+  <p>Tampoco: agregarle sombras o brillos, encerrarlo en otras formas, ni ponerlo sobre fotos con mucho detalle sin una versión de una tinta.</p>
+  <h2 class="anton">Texturas y fotografía</h2>
+  <div class="texturas">
+    <div class="marmol"></div>
+    <div class="listones"></div>
+    <img src="../img/local-fachada.jpg" alt="" style="filter:grayscale(1)">
+  </div>
+  <p><b>Mármol con vetas doradas</b> y <b>listones negros</b>, tomados de las paredes del local. Fotos del barrio y del local en <b>blanco y negro</b>; los cortes terminados, a color.</p>
+</section>
+
+<section class="hoja">
+  <header><span>Pola's Barber Shop</span><span>07 · Aplicaciones</span></header>
+  <h1 class="anton">Aplicaciones</h1>
+  <img class="lamina-img" src="../docs/identidad/aplicaciones.png" alt="Aplicaciones del logo">
+  <p class="pie">Las piezas marcadas como "propuesta" son diseños para producir; las "reales" ya existen en el local o en sus redes.</p>
+</section>
+
+</body>
+</html>

@@ -8,6 +8,8 @@ Documentación:
 
 - [docs/PROYECTO.md](docs/PROYECTO.md): asignación de tareas, identidad de la empresa, problemática y posible resolución.
 - [docs/DOCUMENTACION_TECNICA.md](docs/DOCUMENTACION_TECNICA.md): introducción, descripción del sistema, arquitectura, diseño de datos, comportamiento, restricciones, pruebas, despliegue y ciclo de vida (secciones 1 a 9).
+- [docs/IDENTIDAD_INSTITUCIONAL.md](docs/IDENTIDAD_INSTITUCIONAL.md): marketing e identidad institucional (sección 10): logo, isotipo, paleta, ubicación, merchandising, tríptico, QR y maquetado en Sweet Home 3D.
+- [docs/MANUAL_USUARIO.md](docs/MANUAL_USUARIO.md): manual de usuario para clientes, personal de la barbería y mantenimiento.
 
 ## Funcionalidades
 
@@ -56,7 +58,9 @@ js/admin.js       Panel de administración
 img/              Logo y fotos
 vendor/crd-ui/    Componente de tarjeta crd-ui 0.13.2 (licencia MIT)
 tests/            Pruebas unitarias e integración (node:test)
-docs/             Documentación del proyecto
+docs/             Documentación del proyecto (imágenes de identidad en docs/identidad/)
+marketing/        Piezas de marketing: manual, tríptico, carteles QR, logos, Sweet Home 3D
+                  y el generador (python marketing/generar.py)
 ```
 
 ## Tarjetas de prueba

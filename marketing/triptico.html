@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Tríptico · Pola's Barber Shop</title>
+  <link rel="stylesheet" href="marca.css">
+  <style>
+    @page { size: A4 landscape; margin: 0; }
+    .pagina { display: grid; grid-template-columns: repeat(3, 99mm); width: 297mm; height: 210mm; overflow: hidden; break-after: page; }
+    .pagina:last-child { break-after: auto; }
+    .panel { position: relative; display: flex; flex-direction: column; padding: 11mm 9mm; overflow: hidden; }
+    .panel + .panel { border-left: .2mm dashed rgba(128, 128, 128, .35); }
+    h2 { margin: 0 0 4mm; font-size: 30pt; }
+    h2 .script { display: block; font-size: 18pt; line-height: 1.15; margin-bottom: 1.5mm; transform: rotate(-4deg); transform-origin: left bottom; }
+    .dato { font-size: 9.5pt; line-height: 1.45; }
+    p, li, td { font-size: 9.5pt; line-height: 1.45; }
+    .muted { color: #6b665c; }
+    .negro .muted, .listones .muted { color: #b9b4aa; }
+
+    /* tapa */
+    .tapa { align-items: center; justify-content: center; text-align: center; }
+    .tapa .logo { width: 62mm; filter: drop-shadow(0 0 6mm rgba(238, 182, 55, .45)); }
+    .tapa .script { font-size: 22pt; margin-top: 6mm; transform: rotate(-4deg); }
+    .tapa .grande { font-size: 40pt; margin-top: 1mm; }
+    .tapa .sello { margin-top: 7mm; padding: 2mm 5mm; border: .4mm solid var(--mostaza); border-radius: 99px; color: var(--mostaza); font-size: 8pt; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+
+    /* datos y QR */
+    .dato { margin-bottom: 3.5mm; }
+    .dato strong { display: block; font-size: 7.5pt; letter-spacing: .14em; text-transform: uppercase; color: var(--mostaza-osc); }
+    .negro .dato strong, .listones .dato strong { color: var(--mostaza); }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 4mm; }
+    td { padding: 1mm 0; border-bottom: .2mm dashed #cfc9bc; }
+    td:last-child { text-align: right; font-weight: 700; }
+    .qrs { display: flex; gap: 5mm; margin-top: auto; }
+    .qr { text-align: center; font-size: 7.5pt; font-weight: 700; }
+    .qr img { width: 26mm; background: #fff; padding: 1mm; border-radius: 2mm; }
+    .qr--grande img { width: 38mm; }
+
+    ul { margin: 0 0 4mm; padding-left: 4mm; }
+    .lista-precios { list-style: none; padding: 0; margin: 0; }
+    .lista-precios li { display: grid; grid-template-columns: 1fr auto; gap: 2mm; padding: 2.4mm 0; border-bottom: .2mm dashed rgba(255, 255, 255, .25); }
+    .lista-precios b { font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 13pt; text-transform: uppercase; }
+    .lista-precios span { font-family: Anton, Impact, sans-serif; font-size: 13pt; color: var(--mostaza); }
+    .lista-precios small { grid-column: 1 / -1; color: #b9b4aa; font-size: 8pt; }
+    .foto { width: 100%; height: 58mm; object-fit: cover; object-position: 50% 15%; border: 1.2mm solid #111; border-radius: 2mm; margin: 3mm 0 4mm; }
+    .pasos { list-style: none; counter-reset: p; padding: 0; margin: 0 0 4mm; }
+    .pasos li { counter-increment: p; display: flex; gap: 3mm; align-items: center; margin-bottom: 2.6mm; font-weight: 600; }
+    .pasos li::before { content: counter(p); flex: none; display: grid; place-items: center; width: 7mm; height: 7mm; border-radius: 50%; background: var(--mostaza); color: #111; font-family: Anton, Impact, sans-serif; }
+    .productos { display: grid; grid-template-columns: 1fr 1fr; gap: 2mm; margin: 2mm 0 4mm; }
+    .productos div { padding: 2.5mm; border: .3mm solid rgba(255, 255, 255, .2); border-radius: 2mm; font-size: 8.5pt; font-weight: 700; }
+    .productos div span { display: block; color: var(--mostaza); font-weight: 400; font-size: 7.5pt; }
+  </style>
+</head>
+<body>
+
+<!-- Cara exterior: solapa interior | contratapa | tapa -->
+<section class="pagina">
+  <div class="panel negro">
+    <h2 class="anton"><span class="script">la tienda</span>Ropa &amp; productos</h2>
+    <p class="muted">La pilcha de la casa y lo que usamos en el sillón, para que lo tengas en tu casa.</p>
+    <div class="productos">
+      <div>Remeras<span>con logo bordado</span></div>
+      <div>Buzos oversize<span>frisa, logo en la espalda</span></div>
+      <div>Gorras trucker<span>parche frontal</span></div>
+      <div>Pomadas y ceras<span>fijación mate o brillo</span></div>
+      <div>Barba<span>aceite y shampoo</span></div>
+      <div>Navajas<span>acero inoxidable</span></div>
+    </div>
+    <p>Comprá desde la web: pagás con tarjeta, en efectivo o por transferencia, y retirás en el local.</p>
+    <div class="qrs"><div class="qr qr--grande"><img src="qr/tienda.png" alt="QR de la tienda">Ver la tienda</div></div>
+  </div>
+
+  <div class="panel marmol">
+    <h2 class="anton"><span class="script">vení a</span>visitarnos</h2>
+    <div class="dato"><strong>Dirección</strong>Gral. Madariaga 186, Barrio Lindo<br>Malvinas Argentinas, Almirante Brown</div>
+    <div class="dato"><strong>Cómo llegar</strong>Colectivos 318 y 514 (ramal A).<br>Tren Roca: estaciones Luis Guillón (2,4 km) y Llavallol (2,8 km).</div>
+    <div class="dato"><strong>Horarios</strong></div>
+    <table>
+      <tr><td>Lunes a jueves</td><td>10 a 20 hs</td></tr>
+      <tr><td>Viernes</td><td>10 a 21 hs</td></tr>
+      <tr><td>Sábados</td><td>9 a 21 hs</td></tr>
+      <tr><td>Domingos</td><td>Cerrado</td></tr>
+    </table>
+    <div class="qrs">
+      <div class="qr"><img src="qr/como-llegar.png" alt="QR para llegar">Cómo llegar</div>
+      <div class="qr"><img src="qr/instagram.png" alt="QR de Instagram">@polasbarbershop</div>
+    </div>
+  </div>
+
+  <div class="panel tapa listones">
+    <img class="logo" src="../img/logo.png" alt="Pola's Barber Shop">
+    <span class="script">desde el barrio</span>
+    <div class="anton grande">Cortes<br>con <span class="contorno">estilo</span></div>
+    <div class="sello">Nuevo local · Madariaga 186</div>
+  </div>
+</section>
+
+<!-- Cara interior: historia | servicios | turnos -->
+<section class="pagina">
+  <div class="panel marmol">
+    <h2 class="anton"><span class="script">nuestra</span>historia</h2>
+    <p>Casi <b>diez años</b> cortando en Av. Pedro Suárez nos hicieron parte del barrio. En 2026 dimos el salto a un local nuevo, a pocas cuadras: <b>Gral. Madariaga 186</b>.</p>
+    <img class="foto" src="../img/equipo.jpg" alt="El equipo de Pola's en el nuevo local">
+    <p>Lo armamos con nuestras manos, mate de por medio, y lo inauguramos el <b>4 de septiembre</b>. Mármol, luces y el cartel prendido: los esperamos a todos.</p>
+  </div>
+
+  <div class="panel negro">
+    <h2 class="anton"><span class="script">lo que hacemos</span>Servicios</h2>
+    <ul class="lista-precios">
+      <li><b>Corte</b><span>$9.000</span><small>Fade, taper, clásico o tijera · 30 min</small></li>
+      <li><b>Corte + barba</b><span>$12.000</span><small>Con toalla caliente · 60 min</small></li>
+      <li><b>Barba</b><span>$5.000</span><small>Perfilado y navaja · 30 min</small></li>
+      <li><b>Corte + diseño</b><span>$10.500</span><small>Rayitas o freestyle · 30 min</small></li>
+      <li><b>Color / platinado</b><span>$25.000</span><small>Consultá antes · 120 min</small></li>
+      <li><b>Corte niño</b><span>$7.500</span><small>Hasta 12 años · 30 min</small></li>
+    </ul>
+    <p class="muted" style="margin-top:auto">Precios de referencia. Consultá los vigentes en la web.</p>
+  </div>
+
+  <div class="panel listones">
+    <h2 class="anton"><span class="script">reservá</span>tu turno</h2>
+    <p class="muted">Sin llamadas ni esperar respuesta: en menos de un minuto y a cualquier hora.</p>
+    <ol class="pasos">
+      <li>Elegí el servicio</li>
+      <li>Elegí barbero (o el primero libre)</li>
+      <li>Elegí día y horario</li>
+      <li>Dejá tu nombre y teléfono</li>
+    </ol>
+    <p>Te damos un <b>código de turno</b> al instante. ¿No podés venir? Cancelalo desde <b>Mis turnos</b> y le dejás el lugar a otro.</p>
+    <div class="qrs" style="justify-content:center"><div class="qr qr--grande"><img src="qr/turnos.png" alt="QR para reservar turno">Escaneá y reservá</div></div>
+  </div>
+</section>
+
+<script>
+  // ?pagina=1 o ?pagina=2 muestra una sola cara (para generar las vistas previas)
+  const pagina = new URLSearchParams(location.search).get("pagina");
+  if (pagina) document.querySelectorAll(".pagina").forEach((el, i) => { if (String(i + 1) !== pagina) el.remove(); });
+</script>
+</body>
+</html>

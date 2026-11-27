@@ -1,7 +1,7 @@
 # Documentación técnica — Pola's Barber Shop
 
 Secciones 1 a 9: introducción, descripción del sistema, arquitectura, datos, comportamiento, restricciones, pruebas, despliegue y ciclo de vida.
-Proyecto individual de **Leandro Pereyra**. La identidad de la empresa, la problemática y la resolución están en [PROYECTO.md](PROYECTO.md); las tareas, en los [issues del repositorio](https://github.com/LeandroPereyra-arg/PolaBarberShop/issues?q=is%3Aissue).
+Proyecto individual de **Leandro Pereyra**. La identidad de la empresa, la problemática y la resolución están en [PROYECTO.md](PROYECTO.md); el sector de marketing e identidad institucional (sección 10), en [IDENTIDAD_INSTITUCIONAL.md](IDENTIDAD_INSTITUCIONAL.md); las tareas, en los [issues del repositorio](https://github.com/LeandroPereyra-arg/PolaBarberShop/issues?q=is%3Aissue).
 
 > Los diagramas están escritos en Mermaid: GitHub los muestra como gráficos al abrir este archivo.
 > Cuando un punto describe algo que **todavía no está implementado**, se indica como *propuesto*.

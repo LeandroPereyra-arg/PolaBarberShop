@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Carteles QR por sector · Pola's Barber Shop</title>
+  <link rel="stylesheet" href="marca.css">
+  <style>
+    @page { size: A4; margin: 0; }
+    .hoja { display: grid; grid-template-rows: 1fr 1fr; width: 210mm; height: 297mm; break-after: page; }
+    .hoja:last-child { break-after: auto; }
+    .cartel { display: grid; grid-template-columns: 1fr 1fr; border-bottom: .3mm dashed #bbb; }
+    .cartel__marca { display: flex; flex-direction: column; justify-content: center; gap: 4mm; padding: 12mm; }
+    .cartel__marca img { width: 32mm; }
+    .cartel__marca .sector { font-size: 8pt; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: var(--mostaza); }
+    .cartel__marca h2 { margin: 0; font-size: 34pt; }
+    .cartel__qr { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4mm; padding: 10mm; text-align: center; }
+    .cartel__qr img { width: 72mm; }
+    .cartel__qr p { margin: 0; font-weight: 700; font-size: 11pt; }
+    .cartel__qr small { color: #6b665c; font-size: 8pt; word-break: break-all; }
+
+    /* vista de grilla para la documentación */
+    .grilla-qr { display: none; }
+    body.vista-grilla .hoja { display: none; }
+    body.vista-grilla .grilla-qr { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; width: 1200px; padding: 36px; background: var(--blanco); }
+    .mini { display: grid; grid-template-columns: 1fr 150px; align-items: center; gap: 12px; padding: 18px; background: #fff; border: 1px solid #e2ddd2; border-radius: 14px; }
+    .mini h3 { margin: 0 0 6px; font-size: 26px; }
+    .mini span { font-size: 12px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--mostaza-osc); }
+    .mini img { width: 150px; }
+    .grilla-qr header { grid-column: 1 / -1; display: flex; align-items: baseline; justify-content: space-between; }
+    .grilla-qr header h1 { margin: 0; font-size: 50px; }
+  </style>
+</head>
+<body>
+<div id="carteles"></div>
+<div class="grilla-qr" id="grilla">
+  <header><h1 class="anton">QR por sector del local</h1><span class="script" style="font-size:34px">escaneá</span></header>
+</div>
+
+<script>
+  // Mismo listado que QRS en generar.py
+  const QRS = [
+    ["turnos", "Reservá tu turno", "Vidriera y entrada", "Escaneá y reservá en menos de un minuto"],
+    ["mis-turnos", "Mirá o cancelá tu turno", "Puestos de corte", "Reservá el próximo antes de irte"],
+    ["tienda", "Ropa y productos", "Mostrador y exhibidor", "Comprá online y retirá acá"],
+    ["servicios", "Servicios y precios", "Sala de espera", "Todo lo que hacemos, con precios"],
+    ["como-llegar", "Cómo llegar", "Tríptico y tarjeta personal", "Abrí el mapa en tu celular"],
+    ["instagram", "Seguinos en Instagram", "Caja", "Cortes de la semana y novedades"],
+  ];
+  const carteles = document.getElementById("carteles");
+  for (let i = 0; i < QRS.length; i += 2) {
+    const hoja = document.createElement("section");
+    hoja.className = "hoja";
+    hoja.innerHTML = QRS.slice(i, i + 2).map(([archivo, titulo, sector, texto]) => `
+      <div class="cartel">
+        <div class="cartel__marca listones">
+          <img src="../img/logo.png" alt="Pola's Barber Shop">
+          <span class="sector">${sector}</span>
+          <h2 class="anton">${titulo}</h2>
+        </div>
+        <div class="cartel__qr marmol">
+          <img src="qr/${archivo}.png" alt="Código QR: ${titulo}">
+          <p>${texto}</p>
+          <small>Apuntá la cámara del celular al código</small>
+        </div>
+      </div>`).join("");
+    carteles.appendChild(hoja);
+  }
+  document.getElementById("grilla").insertAdjacentHTML("beforeend", QRS.map(([archivo, titulo, sector]) => `
+    <div class="mini"><div><h3 class="anton">${titulo}</h3><span>${sector}</span></div><img src="qr/${archivo}.png" alt=""></div>`).join(""));
+  if (new URLSearchParams(location.search).get("vista") === "grilla") document.body.classList.add("vista-grilla");
+</script>
+</body>
+</html>
